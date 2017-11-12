@@ -3,16 +3,7 @@
 {|parent|
   var hist;
   hist = parent.hist; // make life easier
-
-  // parent.dailyFunc = File.include("myPath").(parent);
-
-  // DayTimer // use this class to schedule events for the day!!
-  // // check how many people are in the space every 10 minutes, basically
-  // // that function should also call another function (or set of functions)
-  // // that tell the server (audio) what to do and send OSC commands to visual program, as well
-
   hist.tmpArray = Array.fill(144, 0); // a new temporary array (this will be made anew every day)
-
   parent.timer = DayTimer(\mainLoop); // make a main timer that we'll put everything in
 
   // this runs every 10 minutes to update the 'historical record'

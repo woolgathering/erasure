@@ -12,12 +12,9 @@ parent.startup = File.include(parent.thisDir++"/sc/funcs/startup.scd");
 parent.maintainence = File.include(parent.thisDir++"/sc/funcs/daily.scd");
 parent.checkStatus = File.include(parent.thisDir++"/sc/funcs/updateVisitors.scd");
 
-parent.sendUpdate = {
-  // send email with updates here
-};
-
+// installation status functions
 parent.sendAlert = File.include(parent.thisDir++"/sc/funcs/sendAlert.scd");
 parent.sendEmail = File.include(parent.thisDir++"/sc/funcs/sendEmail.scd");
-
+// parent.doChecks = File.include(parent.thisDir++"/sc/funcs/doChecks.scd"); // check to make sure everything is still functioning as it should
 
 )

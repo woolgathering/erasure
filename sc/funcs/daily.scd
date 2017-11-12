@@ -6,11 +6,9 @@
   hist = parent.hist; // make life easier
   // email = File.open(PathName.tmp, "a+")// open an emtpy file for writing (or a string?)
   yesterday = Date.getDate.yesterday.format("%a").toLower.asSymbol; // get yesterday and make it a symbol
-
   hist.countDay(yesterday); // another day has passed, so count it
   hist.calc(yesterday, hist.tmpArray); // recalculate the history for yesterday
   hist.tmpArray = Array.fill(144, 0); // reset the array
-
   archivePath = hist.makeArchive; // make an Archive of the history
 
 
