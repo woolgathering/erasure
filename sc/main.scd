@@ -21,10 +21,27 @@ parent.sendEmail = File.include(parent.thisDir++"/sc/funcs/sendEmail.scd");
 File.include(parent.thisDir++"/sc/synths/synths.scd"); // load the synths
 parent.busses = (
   mainOut: Bus.audio(parent.server, 4);
-  fxBus: Bus.audio(parent.server, 4);
-  revBus: Bus.audio(parent.server, 4);
+  volume: Bus.control(parent.server, 1)
+  // fxBus: Bus.audio(parent.server, 4);
+  // revBus: Bus.audio(parent.server, 4);
 );
 
 // somewhere here load the impulse response for the reverb?
+
+
+fork {
+  // start the sections
+
+  // get the current number of people (even if it's a placeholder)
+
+  // figure out where we are in the section (will be number from 0-1 that updates every 10 minutes)
+
+  // put inside a task? (PLACEHOLDER:: MAKE IT DYNAMIC)
+  // loop {
+  //   case
+  //     {pos < 0.2} {parent.section1.set(\pause, 0)} // and pause everything else??
+  // }
+
+}
 
 )
