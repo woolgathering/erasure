@@ -17,7 +17,7 @@
         parent.sendAlert(errorMsg); // if something is no good, tell me that we're broken
       };
     }
-  });
+  );
 
   // run this every day at midnight
   parent.timer.putDate(\maintainence,

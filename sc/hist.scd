@@ -1,4 +1,4 @@
-(
+{|parent|
 var hist = ();
 
 // parent.hist = (); // an emtpy dict for history
@@ -24,12 +24,13 @@ hist.calc = {|dict, day, new|
   old = dict.at(day) * (dict.count.at(day)-1); // calculate the weights
   array = old + new; // add the two arrays together
   array = array/dict.count.at(day); // get the average
-  dict.at(day) = array; // set it internally
+  dict.put(day, array); // set it internally
   // array; // make sure to return the new average
 };
 
 hist.countDay = {|dict, day|
-  dict.count.at(day) = dict.count.at(day) + 1; // add another day
+  dict.count.put(day, dict.count.at(day) + 1); // add another day
+  // dict.count.at(day) = dict.count.at(day) + 1; // add another day
 };
 
 hist.getHistory = {|dict, day, date|
@@ -37,7 +38,7 @@ hist.getHistory = {|dict, day, date|
   dict.count.at(day)[date]; // return the value
 };
 
-hist.getCurrentCount{|dict, day, date|
+hist.getCurrentCount{|dict|
   var day, date;
   date = Date.getDate;
   day = date.format("%a").toLower.asSymbol;
@@ -63,4 +64,4 @@ hist.makeArchive = {|dict|
 };
 
 
-)
+}

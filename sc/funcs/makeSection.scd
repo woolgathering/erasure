@@ -5,21 +5,21 @@
   Start a section with composite episodes. Make everything necessary, including buffers, busses, groups, etc. Currently divides episodes evenly in the section
   */
 
-  var server, thisDict, groups, busses, buffers, episodes, divisions, sectionFader, lfoTable;
+  var server, thisDict, groups, busses, buffers, episodes, divisions, sectionFader, pipe, lfoTable;
 
   thisDict = (); // an empty dictionary for this stuff
-  // synths = (); // an empty dictionary for synths (better an array?)
+  episodes = ();
   server = parent.server; // get the server
 
-  busses = ();
+  busses = (); // an empty dict for busses
   busses.episodeFader = Bus.control(server, 1); // a bus that tells us where we are in the episode lineage
   busses.fxBus = Bus.audio(server, 4); // a bus for processing
   busses.pipeBus = Bus.audio(server, 4); // a bus to pipe out stuff from each episode
 
   groups = (); // an empty dict for groups
   groups.master = Group.new; // a new group to encapsulate all of the synths for the section
-  groups.players = Group.head(group.master); // a group for the synth players
-  groups.fx = Group.tail(group.master); // a group for the processing
+  groups.players = Group.head(groups.master); // a group for the synth players
+  groups.fx = Group.tail(groups.master); // a group for the processing
 
   // even divisions. May be more interesting to specify them to be uneven.
   divisions = parent.delineateSections(episodeFiles.size, overlap);
@@ -87,7 +87,7 @@
   // a synth that pipes everything (to control overall fades between sections)
   pipe = Synth(\sectionPipe,
     [
-      inBus: busses.pipeBus, outBus: parent.busses.mainOut, masterFader: parent.masterFader,
+      inBus: busses.pipeBus, outBus: parent.busses.rev, masterFader: parent.masterFader,
       envBuff: parent.sineEnv, envBuffSize: parent.sineEnv.size, start: start, end: end
     ],
     target: groups.master, addAction: \addToTail

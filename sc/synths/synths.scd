@@ -22,7 +22,7 @@ SynthDef(\fxSynth, {|inBus, outBus, impulseResp, noiseLev, dryWetMix = 0.5, amp 
 }).send(s);
 
 SynthDef(\sectionPipe, {|inBus, outBus, masterFader, envBuff, envBuffSize, start, end, pause = 0|
-  var sig;
+  var sig, env;
   sig = In.ar(inBus, 4); // four channels in
   masterFader = masterFader.linlin(start, end, 0, envBuffSize).clip(0,envBuffSize); // convert shit; clip it before passing
   env = IndexL.kr(envBuff, masterFader.lag2(1)).lag2; // get our current amplitude and smooth it a bit
@@ -38,7 +38,7 @@ SynthDef(\table_LFO, {|outBus, table, speed|
 }).send(s);
 
 SynthDef(\section_LFO, {|outBus, speed, pause = 0|
-  var trig;
+  var trig, val;
   trig = Dust.kr(speed); // speed is the reciprocal of time; i.e. 20min = (20*60).reciprocal
   val = TRand(0, 1, trig).lag2(speed); // works?
   Out.kr(outBus, val);

@@ -1,5 +1,5 @@
 {|parent, info|
-  var subject, body, file;
+  var subject, body, file, path;
 
   subject = "ALERT!!! ERASURE IS BROKEN!!!";
   body = "The following was returned by doChecks():\n\n";
