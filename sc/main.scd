@@ -1,10 +1,10 @@
 (
-var parent, hist;
+var parent;
 
 parent = (); // an empty dict
 parent.thisDir = "/home/roger/Documents/jacob/pieces/erasure"; // this directory
-hist = File.include(parent.thisDir++"/sc/hist.scd");
-parent.hist = hist; // set it
+parent.hist = File.include(parent.thisDir++"/sc/hist.scd");
+ // set it
 parent.timer = DayTimer.(\erasure); // a DayTimer for the installation
 parent.server = Server.default; // to make sure all things are correct
 
