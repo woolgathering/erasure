@@ -7,9 +7,9 @@
       - vistor sensor: are we still talking to the device that counts visitors?
   */
 
-  var errorMsg, good;
+  var errorMsg, good, server;
   good = true; // true if everything is okay, false if not. Default to true.
-
+  server = parent.server; // remember the server
   // checks here...
 
   [good, errorMsg]; // return an array

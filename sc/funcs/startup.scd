@@ -11,7 +11,7 @@
     {|date| #[0,10,20,30,40,50].includes(date.minute)}, // true every 10 minutes
     {
       parent.updateVisitors; // run the funtion that updates everything
-      hist.getCurrentCount; // get the current number of vistors and remember it
+      // hist.getCurrentCount; // get the current number of vistors and remember it
       # good, errorMsg = parent.doChecks; // check to make sure we're still talking to the visuals and the sensor
       if(good.not) {
         parent.sendAlert(errorMsg); // if something is no good, tell me that we're broken
