@@ -8,10 +8,6 @@
   numVistors = parent.sensor.getCurrent;  // <------- fucntion does not yet exist!
   hist.tmpArray[(d.hour*6)+(d.minute*0.1)] = numVistors;
 
-
-  // down here, do calculations to send information to the visuals and adjust the sound
-  // this is vital!!!
-
   /*
     Math magic here to figure out where the sound+video should be given the history and present
     visitation. Also some other stuff? Random processes?
@@ -42,7 +38,7 @@
   ////////////////////////////////////
   fork {
     var counter = 1, inc; // count the iterations. At 10 seconds, 10 minutes is 60.
-    inc = faderVal/60; // find the increment
+    inc = visualVal/60; // find the increment
     while({counter<=61},
       {
         // maybe add some noise to someVALUE? i.e. +/- 5%?
