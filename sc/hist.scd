@@ -38,12 +38,13 @@ hist.getHistory = {|dict, day, date|
   dict.count.at(day)[date]; // return the value
 };
 
+// fucntion not necessary?
 hist.getCurrentCount{|dict|
   var day, date;
   date = Date.getDate;
   day = date.format("%a").toLower.asSymbol;
-  date = (6 * d.hour.asInteger) + (d.minute.asInteger/10).round; // get the index of the time
-  parent.tmpArray[date] = parent.tracking.getCount; // get the current number of visitors in the space and remember it
+  // date = (6 * d.hour.asInteger) + (d.minute.asInteger/10).round; // get the index of the time
+  // parent.tmpArray[date] = parent.tracking.getCount; // get the current number of visitors in the space and remember it
 };
 
 hist.makeArchive = {|dict|

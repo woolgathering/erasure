@@ -25,6 +25,7 @@ parent.busses = (
   mainOut: Bus.audio(parent.server, 4),
   rev: Bus.audio(parent.server, 4),
   volume: Bus.control(parent.server, 1),
+  sectionFader: Bus.control(parent.server, 1), //
 );
 
 // somewhere here load the impulse response for the reverb?

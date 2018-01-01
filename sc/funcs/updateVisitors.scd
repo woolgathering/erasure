@@ -12,5 +12,44 @@
   // down here, do calculations to send information to the visuals and adjust the sound
   // this is vital!!!
 
-  // visuals.
+  /*
+    Math magic here to figure out where the sound+video should be given the history and present
+    visitation. Also some other stuff? Random processes?
+
+    faderVal = SOMETHING COOL
+  */
+
+  ////////////////////////////////////
+  //    SOUND
+  ////////////////////////////////////
+  fork {
+    var counter = 1, inc; // count the iterations. At 10 seconds, 10 minutes is 60.
+    inc = faderVal/60; // find the increment
+    while({counter<=61},
+      {
+        // maybe add some noise to someVALUE? i.e. +/- 5%?
+        parent.busses.sectionFader.set(inc*counter); // set the value every 10 seconds.
+
+        // also set the localized distorion, noiseVol, reverb, etc.
+
+        10.wait; // wait 10 seconds.
+      };
+    );
+  };
+
+  ////////////////////////////////////
+  //    VISUALS
+  ////////////////////////////////////
+  fork {
+    var counter = 1, inc; // count the iterations. At 10 seconds, 10 minutes is 60.
+    inc = faderVal/60; // find the increment
+    while({counter<=61},
+      {
+        // maybe add some noise to someVALUE? i.e. +/- 5%?
+        // send some OSC message to the visuals machine
+
+        10.wait; // wait 10 seconds.
+      };
+    );
+  };
 }

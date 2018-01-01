@@ -87,7 +87,7 @@
   // a synth that pipes everything (to control overall fades between sections)
   pipe = Synth(\sectionPipe,
     [
-      inBus: busses.pipeBus, outBus: parent.busses.rev, masterFader: parent.masterFader,
+      inBus: busses.pipeBus, outBus: parent.busses.rev, fader: parent.masterFader,
       envBuff: parent.sineEnv, envBuffSize: parent.sineEnv.size, start: start, end: end
     ],
     target: groups.master, addAction: \addToTail
