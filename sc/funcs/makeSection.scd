@@ -47,7 +47,6 @@
     // make the synths, buffers, etc and stick them in a dictionary
     episodeFiles.collect{|path, i|
       var player, fx, buffer, fxBus, thisEpisode, episodeName;
-      thisEpisode = (); // empty dictionary
       episodeName = "episode%".format(i+1).asSymbol; // get a symbolic name
       fxBus = Bus.audio(server, 4); // a bus for this particular episode's processing
       buffer = Buffer.read(server, path); // read the file and load it to the server
@@ -76,9 +75,7 @@
       server.sync;
 
       // put it all together
-      thisEpisode.player = player;
-      thisEpisode.fx = fx;
-      thisEpisode.buffer = buffer;
+      thisEpisode = (player:  player, fx: fx, buffer: buffer);
       episodes.put(episodeName, thisEpisode); // remember it
     };
 
@@ -87,7 +84,7 @@
   // a synth that pipes everything (to control overall fades between sections)
   pipe = Synth(\sectionPipe,
     [
-      inBus: busses.pipeBus, outBus: parent.busses.rev, fader: parent.masterFader,
+      inBus: busses.pipeBus, outBus: parent.busses.rev, fader: parent.busses.sectionFader.asMap,
       envBuff: parent.sineEnv, envBuffSize: parent.sineEnv.size, start: start, end: end
     ],
     target: groups.master, addAction: \addToTail
