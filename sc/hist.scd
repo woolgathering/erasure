@@ -64,5 +64,15 @@ hist.makeArchive = {|dict|
   path; // return the path for emailing it
 };
 
+hist.restore = {|dict, path|
+  var archive;
+  // a function that restores the history from an Archive
+  archive = Object.readArchive(path); // read in the Archive
+  hist.count = archive.count; // set the days that have elapsed
+  archive.history.keysValuesDo{|key, value|
+    hist.put(key, value); // set it
+  };
+};
+
 
 }
