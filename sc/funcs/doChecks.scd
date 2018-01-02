@@ -10,7 +10,17 @@
   var errorMsg, good, server;
   good = true; // true if everything is okay, false if not. Default to true.
   server = parent.server; // remember the server
+  errorMsg = "ERROR!!\n\n"; // a string to start
   // checks here...
+
+  if(parent.server.isRunning.not) {
+    good = false; // it's not good.
+    errorMsg = errorMsg ++ "\tServer is no longer running! ::: %\n\n".format(Date.getDate.stamp);
+  };
+
+  // check the visuals
+
+  // check the sensor
 
   [good, errorMsg]; // return an array
 }
