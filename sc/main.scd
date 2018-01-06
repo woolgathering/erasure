@@ -30,6 +30,8 @@ parent.busses = (
 
 // somewhere here load the impulse response for the reverb?
 
+File.include(parent.thisDir++"/sc/funcs/debug.scd").(parent, level: 0, interval: 15); // start the debug function
+
 
 fork {
   // make the sections
