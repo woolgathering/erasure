@@ -34,7 +34,7 @@ hist.countDay = {|dict, day|
 };
 
 hist.getHistory = {|dict, day, date|
-  date = (6 * d.hour.asInteger) + (d.minute.asInteger/10).round; // get the index of the time
+  date = (6 * date.hour.asInteger) + (date.minute.asInteger/10).round; // get the index of the time
   dict.count.at(day)[date]; // return the value
 };
 
@@ -47,6 +47,7 @@ hist.getCurrentCount{|dict|
   // parent.tmpArray[date] = parent.tracking.getCount; // get the current number of visitors in the space and remember it
 };
 
+// a function to save the history to an Archive
 hist.makeArchive = {|dict|
   var path, archive = (); // an empty dict for the Archive
   path = parent.thisDir++"/archives/"++Date.getDate.stamp; // get the path
@@ -64,9 +65,9 @@ hist.makeArchive = {|dict|
   path; // return the path for emailing it
 };
 
+// a function that restores the history from an Archive
 hist.restore = {|dict, path|
   var archive;
-  // a function that restores the history from an Archive
   archive = Object.readArchive(path); // read in the Archive
   hist.count = archive.count; // set the days that have elapsed
   archive.history.keysValuesDo{|key, value|
