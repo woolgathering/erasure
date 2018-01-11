@@ -4,17 +4,18 @@
   var yesterday, email, hist, plot, archivePath;
 
   hist = parent.hist; // make life easier
-  // email = File.open(PathName.tmp, "a+")// open an emtpy file for writing (or a string?)
+  email = File.open(PathName.tmp++"erasureMaintainenceEmail", "a+")// open an emtpy file for writing
   yesterday = Date.getDate.yesterday.format("%a").toLower.asSymbol; // get yesterday and make it a symbol
   hist.countDay(yesterday); // another day has passed, so count it
   hist.calc(yesterday, hist.tmpArray); // recalculate the history for yesterday
   hist.tmpArray = Array.fill(144, 0); // reset the array
   archivePath = hist.makeArchive; // make an Archive of the history
 
+  // The function doChecks checks the status of the installation and tells if something has broken.
+  // Since it runs every 10 minutes, duplicating it here is not necessary.
 
-
-  // some sort of function that saves the history data as an Archive so we can get it later if something breaks
-  // maybe it can also email me some update so I know it hasn't crashed
-
+  // add plot attachment  after GNUPlot bash script is written. Not that important.
+  parent.sendEmail("Erasure Daily Update", PathName.tmp++"erasureMaintainenceEmail", archivePath);
+  email.close; // close the email file
 
 }

@@ -13,7 +13,19 @@
     visitation. Also some other stuff? Random processes?
 
     faderVal = SOMETHING COOL
+
+    // faderVal should range between 1 and 5; as such it will indicate which section we're in and
+    // how far in between sections we are.
   */
+
+  // given a sectionFader position, pause the groups appropriately:
+  fork {
+    case
+      {faderVal<2.5} {parent.pauseGroups([1,1,0,0,0])}
+      {(faderVal>2.5) and: (faderVal<3.5)} {parent.pauseGroups([0,1,1,0,0])}
+      {(faderVal>3.5) and: (faderVal<4.5)} {parent.pauseGroups([0,1,1,0,0])}
+      {faderVal>4.5} {parent.pauseGroups([0,1,1,0,0])};
+  };
 
   ////////////////////////////////////
   //    SOUND
