@@ -3,8 +3,7 @@ var parent;
 
 parent = (); // an empty dict
 parent.thisDir = "/home/roger/Documents/jacob/pieces/erasure"; // this directory
-parent.hist = File.include(parent.thisDir++"/sc/hist.scd");
- // set it
+parent.hist = File.include(parent.thisDir++"/sc/hist.scd"); // set it
 parent.timer = DayTimer.(\erasure); // a DayTimer for the installation
 parent.server = Server.default; // to make sure all things are correct
 
@@ -25,28 +24,34 @@ parent.busses = (
   mainOut: Bus.audio(parent.server, 4),
   rev: Bus.audio(parent.server, 4),
   volume: Bus.control(parent.server, 1),
-  sectionFader: Bus.control(parent.server, 1), //
+  sectionFader: Bus.control(parent.server, 1), // fader for the sections
 );
 
 // somewhere here load the impulse response for the reverb?
+parent.prepareReverb = File.include(parent.thisDir++"/sc/funcs/prepareReverb.scd"); // load the func to load impulse responses
 
 File.include(parent.thisDir++"/sc/funcs/debug.scd").(parent, level: 0, interval: 15); // start the debug function
 
 
 fork {
+  // actually prepare the reverb
+  parent.prepareReverb(parent, parent.thisDir++"/sound/ir/MYPATH.wav"); // prepare the reverb
+
+  // prepare the history
+  parent.hist = parent.hist(parent); // evaluate the function and set the environment (do it in line 6?)
+
   // make the sections
   parent.sections = ();
   5.do{|i|
     var sectionName, episodeFiles, thisSection;
     sectionName = "section%".format(i+1).asSymbol; // get the name
     episodeFiles = (parent.thisDir++"/sound/%/*.wav".format(sectionName)).pathMatch; // get the directory
-    thisSection = parent.makeSection(episodeFiles); // default arguments
+    thisSection = parent.makeSection(episodeFiles, overlap: 0.25, start: i+1, end: i+2); // default arguments. Make sure start and end make sense!
     parent.sections.put(sectionName, thisSection); // remember this section
   };
 
-  // get the current number of people (even if it's a placeholder)
-
-  // figure out where we are in the section (will be number from 0-1 that updates every 10 minutes)
+  // get the number of visitors and set the thing in motion. This also occurs every 10 minutes on the minute but appears here since we can't be sure we will start the work on the minute
+  parent.updateVisitors;
 
   // put inside a task? (PLACEHOLDER:: MAKE IT DYNAMIC) Maybe get the divisions of the sections dynamically and work from there?
   // loop {
