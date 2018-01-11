@@ -25,4 +25,17 @@
     parent.maintainence; // run the maintainence function
   );
 
+  // do this every 30 seconds instead of 10 minutes inside updateVisitors()
+  parent.timer.putDate(\pauseGroups,
+    {|date| #[0,30].includes(date.second)}, // every 30 seconds
+    {
+      // given a sectionFader position, pause the groups appropriately:
+      case
+        {faderVal<2.5} {parent.pauseGroups([1,1,0,0,0])}
+        {(faderVal>2.5) and: (faderVal<3.5)} {parent.pauseGroups([0,1,1,0,0])}
+        {(faderVal>3.5) and: (faderVal<4.5)} {parent.pauseGroups([0,1,1,0,0])}
+        {faderVal>4.5} {parent.pauseGroups([0,1,1,0,0])};
+    }
+  );
+
 }
