@@ -53,17 +53,6 @@ fork {
   // get the number of visitors and set the thing in motion. This also occurs every 10 minutes on the minute but appears here since we can't be sure we will start the work on the minute
   parent.updateVisitors;
 
-  // put inside a task? (PLACEHOLDER:: MAKE IT DYNAMIC) Maybe get the divisions of the sections dynamically and work from there?
-  // loop {
-  //   case
-  //     {pos < 0.2} {parent.pauseGroups([1,1,0,0,0])} // run only the first two groups
-  //     {(pos>0.2) and: (pos<0.4)} {parent.pauseGroups([0,1,1,0,0])} // run only the first two groups
-  //     {(pos>0.35) and: (pos<0.6)} {parent.pauseGroups([0,0,1,1,0])}; // run only the first two groups
-  //     // etc...
-  //
-  //     30.wait; // run every 30 seconds
-  // }
-
 }
 
 )
