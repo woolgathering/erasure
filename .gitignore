@@ -1,3 +1,5 @@
 *.wav
-
 test.scd
+
+# don't save things in /bench for now
+/bench/*
