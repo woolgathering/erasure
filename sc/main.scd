@@ -2,6 +2,7 @@
 var parent;
 
 parent = (); // an empty dict
+parent.freeables = List.new(0); // an emtpy list for things that can be freed
 parent.thisDir = "/home/roger/Documents/jacob/pieces/erasure"; // this directory
 parent.hist = File.include(parent.thisDir++"/sc/hist.scd"); // set it
 parent.timer = DayTimer.(\erasure); // a DayTimer for the installation
@@ -27,11 +28,11 @@ parent.busses = (
   sectionFader: Bus.control(parent.server, 1), // fader for the sections
 );
 
-// somewhere here load the impulse response for the reverb?
-parent.prepareReverb = File.include(parent.thisDir++"/sc/funcs/prepareReverb.scd"); // load the func to load impulse responses
+// load the func to load impulse responses
+parent.prepareReverb = File.include(parent.thisDir++"/sc/funcs/prepareReverb.scd");
 
+// debugging
 File.include(parent.thisDir++"/sc/funcs/debug.scd").(parent, level: 0, interval: 15); // start the debug function
-
 
 fork {
   // actually prepare the reverb
