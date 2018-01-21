@@ -90,7 +90,7 @@
     target: groups.master, addAction: \addToTail
   );
 
-
+  server.sync;
   thisDict = (groups: groups, busses: busses, episodes: episodes, divisions: divisions);
   thisDict; // return thisDict
 }
