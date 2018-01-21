@@ -18,6 +18,14 @@
     // how far in between sections we are.
   */
 
+  // get the largest number of visitors ever
+  maxVisitors = (hist.sun++hist.mon++hist.tue++hist.wed++hist.thu++hist.fri++hist.sat).maxItem;
+  vistorRatio = (numVistors/maxVisitors)*0.4; // make a ratio and multiply it by the weight
+  histRatio = hist.at(THISDAYNAME)[(d.hour*6)+(d.minute*0.1)]; // what's our usual visitiation right now?
+  histRatio =
+
+  faderVal = (vistorRatio + histRatio + recentHistRatio)*5; // weights add to one
+
   ////////////////////////////////////
   //    SOUND
   ////////////////////////////////////
