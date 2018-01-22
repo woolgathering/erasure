@@ -5,24 +5,29 @@
   Start a section with composite episodes. Make everything necessary, including buffers, busses, groups, etc. Currently divides episodes evenly in the section
   */
 
-  var server, thisDict, groups, busses, buffers, episodes, divisions, sectionFader, pipe, lfoTable;
+  var server, sectionDict, groups, busses, buffers, episodes, divisions, sectionFader, pipe, lfoTable;
 
-  thisDict = (); // an empty dictionary for this stuff
-  episodes = ();
+  sectionDict = (); // an empty dictionary for this stuff
+  episodes = (); // an empty dict for the episodes
   server = parent.server; // get the server
 
   busses = (); // an empty dict for busses
   busses.episodeFader = Bus.control(server, 1); // a bus that tells us where we are in the episode lineage
   busses.fxBus = Bus.audio(server, 4); // a bus for processing
-  busses.pipeBus = Bus.audio(server, 4); // a bus to pipe out stuff from each episode
+  busses.pipeBus = Bus.audio(server, 16); // a bus to pipe out stuff from each episode post-spatialization
 
   groups = (); // an empty dict for groups
   groups.master = Group.new; // a new group to encapsulate all of the synths for the section
   groups.players = Group.head(groups.master); // a group for the synth players
   groups.fx = Group.tail(groups.master); // a group for the processing
+  groups.spat = Group.tail(groups.master); // a group for the spatailization of each (eats lots of CPU??)
 
   // even divisions. May be more interesting to specify them to be uneven.
   divisions = parent.delineateSections(episodeFiles.size, overlap);
+
+  // add the previous things to freeables
+  parent.freeables.addAll(busses);
+  parent.freeables.addAll(groups);
 
   // actually make the section
   fork {
@@ -45,15 +50,20 @@
     );
 
     // make the synths, buffers, etc and stick them in a dictionary
+    // note that each synth is particular to a number of channels and that the symbol is created on the fly
     episodeFiles.collect{|path, i|
-      var player, fx, buffer, fxBus, thisEpisode, episodeName;
+      var player, fx, spat, buffer, numChannels, fxBus, spatBus, thisEpisode, episodeName;
       episodeName = "episode%".format(i+1).asSymbol; // get a symbolic name
-      fxBus = Bus.audio(server, 4); // a bus for this particular episode's processing
       buffer = Buffer.read(server, path); // read the file and load it to the server
-      server.sync; // wait for it to finish loading
+      server.sync; // wait
+      numChannels = buffer.numChannels; // get the number of channels
+      fxBus = Bus.audio(server, numChannels); // a bus for this particular episode's processing
+      spatBus = Bus.audio(server, numChannels); // a bus for spatailization
+      server.sync; // wait
+      parent.freeables.addAll([buffer,fxBus]); // add this stuff to freeables
 
       // set the player
-      player = Synth(\playFile,
+      player = Synth("playFile_%ch".format(numChannels).asSymbol,
         [
           outBus: fxBus, buff: buffer, envBuff: parent.sineEnv,
           envBuffSize: parent.sineEnv.size, pos: busses.episodeFader.asMap,
@@ -64,9 +74,9 @@
       server.sync; // wait for everything
 
       // set the processing
-      fx = Synth(\fxSynth,
+      fx = Synth("fxSynth_%ch".format(numChannels).asSymbol,
         [
-          inBus: fxBus, outBus: busses.pipeBus, impulseResp: parent.impulse,
+          inBus: fxBus, outBus: spatBus, impulseResp: parent.impulse,
           noiseLev: 0, dryWetMix: 0.5, distort: 0, amp: parent.busses.volume.asMap,
           pause: 1
         ],
@@ -74,14 +84,22 @@
       );
       server.sync;
 
+      // spatialize and send it out, braj. Initial speed is between 30 and 45 seconds of movement, spread varies depending on numChannels: the more channels there are, the lower the spread.
+      spat = Synth("VBAP_%ch".format(numChannels).asSymbol,
+        [
+          inBus: spatBus, outBus: busses.pipeBus, vbapBuff: parent.spat.buff, aziSpeed: rrand(0.0222, 0.0333),
+          eleSpeed: rrand(0.0222, 0.0333), spread: numChannels.reciprocal * rrand(150,175), pause: 1
+        ]
+        target: groups.spat, addAction: \addToHead
+      );
+
       // put it all together
-      thisEpisode = (player:  player, fx: fx, buffer: buffer);
+      thisEpisode = (player: player, fx: fx, spat: spat, buffer: buffer);
       episodes.put(episodeName, thisEpisode); // remember it
     };
-
   };
 
-  // a synth that pipes everything (to control overall fades between sections)
+  // a synth that pipes everything to the main reverb (to control overall fades between sections)
   pipe = Synth(\sectionPipe,
     [
       inBus: busses.pipeBus, outBus: parent.busses.rev, fader: parent.busses.sectionFader.asMap,
@@ -91,6 +109,6 @@
   );
 
   server.sync;
-  thisDict = (groups: groups, busses: busses, episodes: episodes, divisions: divisions);
-  thisDict; // return thisDict
+  sectionDict = (groups: groups, busses: busses, episodes: episodes, divisions: divisions);
+  sectionDict; // return sectionDict
 }
