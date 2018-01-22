@@ -45,14 +45,18 @@ SynthDef(\section_LFO, {|outBus, speed, pause = 0|
   Out.kr(outBus, val);
 }).send(s);
 
+///////////////////////
+// these two synths should be moved to another file after we reorganize the synths
+//////////////////////
 SynthDef(\reverb, {|inBus, outBus, impulseBuff, initDel = 0.02, dry = 0.5, wet = 0.5, hp = 250|
   var sig, rev;
-  sig = In.ar(inBus, 4); // four channels in for kicks
+  sig = In.ar(inBus, 16); // 16 channels
   // rev = PartConv.ar()
 }).send(s);
 
-SynthDef(\mainPipe, {|inBus, outBus, amp = 0.2|
+SynthDef(\mainPipe, {|inBus, outBus, subBus, amp = 0.2|
   var sig;
-  sig = In.ar(inBus, 4); // four channels in
+  sig = In.ar(inBus, 16); // four channels in
+  Out.ar(subBus, sig.sum*0.707*amp); // send to the sub
   Out.ar(outBus, sig*amp); // send it out
 }).send(s);

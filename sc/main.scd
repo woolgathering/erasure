@@ -22,8 +22,8 @@ parent.doChecks = File.include(parent.thisDir++"/sc/funcs/doChecks.scd"); // che
 
 File.include(parent.thisDir++"/sc/synths/synths.scd"); // load the synths
 parent.busses = (
-  mainOut: Bus.audio(parent.server, 4),
-  rev: Bus.audio(parent.server, 4),
+  mainOut: Bus.audio(parent.server, 16),
+  rev: Bus.audio(parent.server, 16),
   volume: Bus.control(parent.server, 1),
   sectionFader: Bus.control(parent.server, 1), // fader for the sections
 );
