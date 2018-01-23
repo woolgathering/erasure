@@ -75,5 +75,6 @@ hist.restore = {|dict, path|
   };
 };
 
+hist; // return the dictionary
 
 }

@@ -2,11 +2,12 @@
 var parent;
 
 parent = (); // an empty dict
-parent.freeables = List.new(0); // an emtpy list for things that can be freed
 parent.thisDir = "/home/roger/Documents/jacob/pieces/erasure"; // this directory
-parent.hist = File.include(parent.thisDir++"/sc/hist.scd"); // set it
-parent.timer = DayTimer.(\erasure); // a DayTimer for the installation
 parent.server = Server.default; // to make sure all things are correct
+parent.freeables = List.new(0); // an emtpy list for things that can be freed
+parent.spat = File.include(parent.thisDir++"/sc/dicts/vbapSpat.scd", parent); // get spatialization stuff
+parent.hist = File.include(parent.thisDir++"/sc/dicts/hist.scd", parent); // set it
+parent.timer = DayTimer.(\erasure); // a DayTimer for the installation
 
 parent.startup = File.include(parent.thisDir++"/sc/funcs/startup.scd"); // function that starts the piece. Execute after everything is loaded.
 parent.maintainence = File.include(parent.thisDir++"/sc/funcs/maintainence.scd"); // function that scheudles the events for the day and does maintainence, evaluated at midnight
