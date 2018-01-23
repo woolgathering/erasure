@@ -5,8 +5,8 @@ parent = (); // an empty dict
 parent.thisDir = "/home/roger/Documents/jacob/pieces/erasure"; // this directory
 parent.server = Server.default; // to make sure all things are correct
 parent.freeables = List.new(0); // an emtpy list for things that can be freed
-parent.spat = File.include(parent.thisDir++"/sc/dicts/vbapSpat.scd", parent); // get spatialization stuff
-parent.hist = File.include(parent.thisDir++"/sc/dicts/hist.scd", parent); // set it
+parent.spat = File.include(parent.thisDir++"/sc/dicts/vbapSpat.scd", parent); // compile and evaluate the spat diction.
+parent.hist = File.include(parent.thisDir++"/sc/dicts/hist.scd", parent); // compile and evaluate the hist dictionary
 parent.timer = DayTimer.(\erasure); // a DayTimer for the installation
 
 parent.startup = File.include(parent.thisDir++"/sc/funcs/startup.scd"); // function that starts the piece. Execute after everything is loaded.
@@ -14,14 +14,18 @@ parent.maintainence = File.include(parent.thisDir++"/sc/funcs/maintainence.scd")
 parent.updateVisitors = File.include(parent.thisDir++"/sc/funcs/updateVisitors.scd"); // function that actually updates the stuff in the work
 parent.delineateSections = File.include(parent.thisDir++"/sc/funcs/delineateSections.scd"); // function that figures out where to break the sections when panning through episodes/sections
 parent.makeSection = File.include(parent.thisDir++"/sc/funcs/makeSection.scd"); // function that makes the sections
-// parent.prepareReverb = File.include(parent.thisDir++"/sc/funcs/prepareReverb.scd"); // function to prepare the reverbs
+parent.prepareReverb = File.include(parent.thisDir++"/sc/funcs/prepareReverb.scd"); // function to prepare the reverb
 
 // installation status functions
 parent.sendAlert = File.include(parent.thisDir++"/sc/funcs/sendAlert.scd"); // send an alart if broken
 parent.sendEmail = File.include(parent.thisDir++"/sc/funcs/sendEmail.scd"); // send an email with information
 parent.doChecks = File.include(parent.thisDir++"/sc/funcs/doChecks.scd"); // check to make sure everything is still functioning as it should
 
-File.include(parent.thisDir++"/sc/synths/synths.scd"); // load the synths
+// load all the synthdefs in the /sc/synths/ directory
+(parent.thisDir++"/sc/synths/*.scd").pathMatch.do{|path|
+  File.include(path, parent); // evaluate the file; no need for return
+};
+
 parent.busses = (
   mainOut: Bus.audio(parent.server, 16),
   rev: Bus.audio(parent.server, 16),
@@ -29,21 +33,24 @@ parent.busses = (
   sectionFader: Bus.control(parent.server, 1), // fader for the sections
 );
 
-// load the func to load impulse responses
-parent.prepareReverb = File.include(parent.thisDir++"/sc/funcs/prepareReverb.scd");
-
-// debugging
+/////// debugging ///////
 File.include(parent.thisDir++"/sc/funcs/debug.scd").(parent, level: 0, interval: 15); // start the debug function
+/////////////////////////
 
+////////
+/*
+  Start the piece!
+*/
+////////
 fork {
+  // run the startup function
+  parent.startup.(parent);
+
   // actually prepare the reverb
   parent.prepareReverb(parent, parent.thisDir++"/sound/ir/MYPATH.wav"); // prepare the reverb
 
-  // prepare the history
-  parent.hist = parent.hist(parent); // evaluate the function and set the environment (do it in line 6?)
-
   // make the sections
-  parent.sections = ();
+  parent.sections = (); // an empty dictionary
   5.do{|i|
     var sectionName, episodeFiles, thisSection;
     sectionName = "section%".format(i+1).asSymbol; // get the name
