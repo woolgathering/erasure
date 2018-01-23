@@ -52,11 +52,14 @@
     // make the synths, buffers, etc and stick them in a dictionary
     // note that each synth is particular to a number of channels and that the symbol is created on the fly
     episodeFiles.collect{|path, i|
-      var player, fx, spat, buffer, numChannels, fxBus, spatBus, thisEpisode, episodeName;
+      var player, fx, spat, buffer, sf, numChannels, fxBus, spatBus, thisEpisode, episodeName;
       episodeName = "episode%".format(i+1).asSymbol; // get a symbolic name
-      buffer = Buffer.read(server, path); // read the file and load it to the server
+      sf = SoundFile.openRead(path); // open as a soundfile
+      if(sf.isNil) {"% failed to open!!".format(path).error}; // tell us if it failed
+      numChannels = sf.numChannels; // read into number of channels
+      sf.close; // close the soundfile since we have what we need
+      buffer = Buffer.cueSoundFile(server, path, numChannels: numChannels, bufferSize: 32768); // read the file and prepare for reading from disk
       server.sync; // wait
-      numChannels = buffer.numChannels; // get the number of channels
       fxBus = Bus.audio(server, numChannels); // a bus for this particular episode's processing
       spatBus = Bus.audio(server, numChannels); // a bus for spatailization
       server.sync; // wait
