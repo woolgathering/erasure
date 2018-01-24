@@ -28,28 +28,29 @@ SynthDef(\section_LFO, {|outBus, speed, pause = 0|
   Out.kr(outBus, val);
 }).send(s);
 
-SynthDef(\reverb, {|inBus, outBus, impulseBuffs = #[0,0], initDel = 0.02, dry = 0.5, wet = 0.5, hp = 250|
-  var sig, rev;
+SynthDef(\reverb, {|inBus, outBus, impulseBuffs = #[0,0], initDel = 0.02, dry = 0.5, wet = 0.5, leak = 0.01, hp = 250|
+  var sig, rev, leakSig;
   sig = In.ar(inBus, 16); // 16 channels
-  rev = DelayN.ar(sig, initDel, initDel); // initial delay
+  rev = DelayN.ar(sig, (initDel+Rand(0.0,0.01) ! 16), initDel+0.01); // initial delay
+  leakSig = Mix(rev)*leak; // a little bit of everything for each channel, regardless of position
   // individual reverbs on each channel
   rev = [
-    PartConv.ar(rev[0], 4098, impulseBuffs[0], 0.707),
-    PartConv.ar(rev[1], 4098, impulseBuffs[1], 0.707),
-    PartConv.ar(rev[2], 4098, impulseBuffs[0], 0.707),
-    PartConv.ar(rev[3], 4098, impulseBuffs[1], 0.707),
-    PartConv.ar(rev[4], 4098, impulseBuffs[0], 0.707),
-    PartConv.ar(rev[5], 4098, impulseBuffs[1], 0.707),
-    PartConv.ar(rev[6], 4098, impulseBuffs[0], 0.707),
-    PartConv.ar(rev[7], 4098, impulseBuffs[1], 0.707),
-    PartConv.ar(rev[8], 4098, impulseBuffs[0], 0.707),
-    PartConv.ar(rev[9], 4098, impulseBuffs[1], 0.707),
-    PartConv.ar(rev[10], 4098, impulseBuffs[0], 0.707),
-    PartConv.ar(rev[11], 4098, impulseBuffs[1], 0.707),
-    PartConv.ar(rev[12], 4098, impulseBuffs[0], 0.707),
-    PartConv.ar(rev[13], 4098, impulseBuffs[1], 0.707),
-    PartConv.ar(rev[14], 4098, impulseBuffs[0], 0.707),
-    PartConv.ar(rev[15], 4098, impulseBuffs[1], 0.707),
+    PartConv.ar(rev[0]+leakSig, 4098, impulseBuffs[0], 0.707),
+    PartConv.ar(rev[1]+leakSig, 4098, impulseBuffs[1], 0.707),
+    PartConv.ar(rev[2]+leakSig, 4098, impulseBuffs[0], 0.707),
+    PartConv.ar(rev[3]+leakSig, 4098, impulseBuffs[1], 0.707),
+    PartConv.ar(rev[4]+leakSig, 4098, impulseBuffs[0], 0.707),
+    PartConv.ar(rev[5]+leakSig, 4098, impulseBuffs[1], 0.707),
+    PartConv.ar(rev[6]+leakSig, 4098, impulseBuffs[0], 0.707),
+    PartConv.ar(rev[7]+leakSig, 4098, impulseBuffs[1], 0.707),
+    PartConv.ar(rev[8]+leakSig, 4098, impulseBuffs[0], 0.707),
+    PartConv.ar(rev[9]+leakSig, 4098, impulseBuffs[1], 0.707),
+    PartConv.ar(rev[10]+leakSig, 4098, impulseBuffs[0], 0.707),
+    PartConv.ar(rev[11]+leakSig, 4098, impulseBuffs[1], 0.707),
+    PartConv.ar(rev[12]+leakSig, 4098, impulseBuffs[0], 0.707),
+    PartConv.ar(rev[13]+leakSig, 4098, impulseBuffs[1], 0.707),
+    PartConv.ar(rev[14]+leakSig, 4098, impulseBuffs[0], 0.707),
+    PartConv.ar(rev[15]+leakSig, 4098, impulseBuffs[1], 0.707),
   ];
   // subRev = PartConv.ar(rev.sum*0.0625, 4098, impulseBuffs[1], 0.707); // subwoofer reverb
 
@@ -62,7 +63,8 @@ SynthDef(\reverb, {|inBus, outBus, impulseBuffs = #[0,0], initDel = 0.02, dry = 
 SynthDef(\mainPipe, {|inBus, outBus, subBus, amp = 0.2|
   var sig, subSig;
   sig = In.ar(inBus, 16); // 16 channels in
-  subSig = LPF.ar(sig.sum*0.0625*amp, 100); // lowpass the subwoofer signal
+  sig = BAllPass.ar(sig, (Rand(1000, 10000) ! 16), 0.8); // change the phases of each speaker
+  subSig = LPF.ar(Mix(sig)*0.0625*amp, 50); // lowpass the subwoofer signal
   Out.ar(subBus, subSig); // send to the sub (no reverb?)
-  Out.ar(outBus, HPF.ar(sig*amp, 100)); // hipass and send it out
+  Out.ar(outBus, HPF.ar(sig*amp, 50)); // hipass and send it out
 }).send(s);
