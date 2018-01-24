@@ -1,7 +1,13 @@
-// startup func
-// function that initializes the piece and creates the functions that run on a timer
+////////////////////////////////////
+/*
+  Startup Funcion
+  This function creates the functions that run on a timer and the synths that capture all outputs
+*/
+////////////////////////////////////
+
 {|parent|
   var hist, good, errorMsg;
+  parent.synths = (); // an emtpy dictionary for the synths
   hist = parent.hist; // make life easier
   hist.tmpArray = Array.fill(144, 0); // a new temporary array (this will be made anew every day)
   parent.timer = DayTimer(\mainLoop); // make a main timer that we'll put everything in
@@ -36,6 +42,25 @@
         {(faderVal>3.5) and: (faderVal<4.5)} {parent.pauseGroups([0,1,1,0,0])}
         {faderVal>4.5} {parent.pauseGroups([0,1,1,0,0])};
     }
+  );
+
+  ////////////////////////////
+  // Start synths through which everything is routed
+  ////////////////////////////
+
+  // reverb synth
+  parent.synths.reverb = Synth(\reverb,
+    [
+    inBus: parent.busses.rev, outBus: parent.busses.mainOut, initDel: 0.02, dry: 1, wet: 0, leak: 0.01, hp: 150,
+    impulseBuffs: [parent.revBuffs.left, parent.revBuffs.right]
+    ],
+    target: parent.groups.revAndOut, addAction: \addToHead
+  );
+
+  // make the main pipe for the output: THIS GOES TO THE MAINS!!!
+  parent.synths.mainPipe = Synth(\mainPipe,
+    [inBus: parent.busses.mainOut, outBus: 0, subBus: 16, amp: -3.dbamp],
+    target: parent.groups.revAndOut, addAction: \addToTail
   );
 
 }
