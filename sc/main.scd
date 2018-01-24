@@ -33,6 +33,11 @@ parent.busses = (
   sectionFader: Bus.control(parent.server, 1), // fader for the sections
 );
 
+parent.groups = (
+  sections: Group.new(parent.server, \addToHead),
+  revAndOut: Group.after(parent.groups.sections)
+);
+
 /////// debugging ///////
 File.include(parent.thisDir++"/sc/funcs/debug.scd").(parent, level: 0, interval: 15); // start the debug function
 /////////////////////////
@@ -43,11 +48,11 @@ File.include(parent.thisDir++"/sc/funcs/debug.scd").(parent, level: 0, interval:
 */
 ////////
 fork {
-  // run the startup function
-  parent.startup.(parent);
-
   // actually prepare the reverb
   parent.prepareReverb(parent, parent.thisDir++"/sound/ir/MYPATH.wav"); // prepare the reverb
+
+  // run the startup function after reverb since it starts the reverb synth
+  parent.startup.(parent);
 
   // make the sections
   parent.sections = (); // an empty dictionary
