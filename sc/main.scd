@@ -2,11 +2,14 @@
 var parent;
 
 parent = (); // an empty dict
+~parent = parent; // capture it in the global environment so we can interact with it later
 parent.thisDir = "/home/roger/Documents/jacob/pieces/erasure"; // this directory
 parent.server = Server.default; // to make sure all things are correct
+parent.demoMode = true; // demo mode to not read from sensors?
 parent.freeables = List.new(0); // an emtpy list for things that can be freed
 parent.spat = File.include(parent.thisDir++"/sc/dicts/vbapSpat.scd", parent); // compile and evaluate the spat diction.
 parent.hist = File.include(parent.thisDir++"/sc/dicts/hist.scd", parent); // compile and evaluate the hist dictionary
+parent.vis = File.include(parent.thisDir++"/sc/dicts/vis.scd", parent); // compile and evaluate the visual dictionary
 parent.timer = DayTimer.(\erasure); // a DayTimer for the installation
 
 parent.startup = File.include(parent.thisDir++"/sc/funcs/startup.scd"); // function that starts the piece. Execute after everything is loaded.
@@ -15,6 +18,7 @@ parent.updateVisitors = File.include(parent.thisDir++"/sc/funcs/updateVisitors.s
 parent.delineateSections = File.include(parent.thisDir++"/sc/funcs/delineateSections.scd"); // function that figures out where to break the sections when panning through episodes/sections
 parent.makeSection = File.include(parent.thisDir++"/sc/funcs/makeSection.scd"); // function that makes the sections
 parent.prepareReverb = File.include(parent.thisDir++"/sc/funcs/prepareReverb.scd"); // function to prepare the reverb
+parent.demoPattern = File.include(parent.thisDir++"/sc/funcs/demoMode.scd"); // get the demo mode pattern
 
 // installation status functions
 parent.sendAlert = File.include(parent.thisDir++"/sc/funcs/sendAlert.scd"); // send an alart if broken
@@ -33,6 +37,11 @@ parent.busses = (
   sectionFader: Bus.control(parent.server, 1), // fader for the sections
 );
 
+parent.groups = (
+  sections: Group.new(parent.server, \addToHead),
+  revAndOut: Group.after(parent.groups.sections)
+);
+
 /////// debugging ///////
 File.include(parent.thisDir++"/sc/funcs/debug.scd").(parent, level: 0, interval: 15); // start the debug function
 /////////////////////////
@@ -43,11 +52,11 @@ File.include(parent.thisDir++"/sc/funcs/debug.scd").(parent, level: 0, interval:
 */
 ////////
 fork {
-  // run the startup function
-  parent.startup.(parent);
-
   // actually prepare the reverb
   parent.prepareReverb(parent, parent.thisDir++"/sound/ir/MYPATH.wav"); // prepare the reverb
+
+  // run the startup function after reverb since it starts the reverb synth
+  parent.startup.(parent);
 
   // make the sections
   parent.sections = (); // an empty dictionary
