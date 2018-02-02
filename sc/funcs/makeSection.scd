@@ -17,7 +17,7 @@
   busses.pipeBus = Bus.audio(server, 16); // a bus to pipe out stuff from each episode post-spatialization
 
   groups = (); // an empty dict for groups
-  groups.master = Group.new; // a new group to encapsulate all of the synths for the section
+  groups.master = Group.tail(parent.groups.sections); // a new group to encapsulate all of the synths for the section
   groups.players = Group.head(groups.master); // a group for the synth players
   groups.fx = Group.tail(groups.master); // a group for the processing
   groups.spat = Group.tail(groups.master); // a group for the spatailization of each (eats lots of CPU??)

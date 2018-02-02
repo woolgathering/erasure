@@ -16,6 +16,7 @@
   parent.timer.putDate(\checkStatus,
     {|date| #[0,5,10,15,20,25,30,35,40,45,50,55].includes(date.minute)}, // true every 5 minutes
     {
+      if(debug>0) {Date.getDate.postln}; // if we're debugging, post the time every 5 minutes
       parent.updateVisitors; // run the funtion that updates everything
       // hist.getCurrentCount; // get the current number of vistors and remember it
       # good, errorMsg = parent.doChecks; // check to make sure we're still talking to the visuals and the sensor

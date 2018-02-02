@@ -1,14 +1,14 @@
 {|parent|
 var hist = ();
 
-// parent.hist = (); // an emtpy dict for history
-hist.sun = Array.rand(144, 0, 20); // random values to start
-hist.mon = Array.rand(144, 0, 20); // random values to start
-hist.tue = Array.rand(144, 0, 20); // random values to start
-hist.wed = Array.rand(144, 0, 20); // random values to start
-hist.thu = Array.rand(144, 0, 20); // random values to start
-hist.fri = Array.rand(144, 0, 20); // random values to start
-hist.sat = Array.rand(144, 0, 20); // random values to start
+// arrays to hold the number of visitors every 5 minutes as set by updateVisitors()
+hist.sun = Array.rand(288, 0, 20); // random values to start
+hist.mon = Array.rand(288, 0, 20); // random values to start
+hist.tue = Array.rand(288, 0, 20); // random values to start
+hist.wed = Array.rand(288, 0, 20); // random values to start
+hist.thu = Array.rand(288, 0, 20); // random values to start
+hist.fri = Array.rand(288, 0, 20); // random values to start
+hist.sat = Array.rand(288, 0, 20); // random values to start
 
 hist.count = (); // another dictionary to count the days elapsted
 hist.count.sun = 1;
