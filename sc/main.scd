@@ -37,6 +37,7 @@ parent.busses = (
   sectionFader: Bus.control(parent.server, 1), // fader for the sections
 );
 
+// the two main groups that capture all the sections and the one that captures the reverb and output
 parent.groups = (
   sections: Group.new(parent.server, \addToHead),
   revAndOut: Group.after(parent.groups.sections)
