@@ -10,32 +10,32 @@ hist.thu = Array.rand(288, 0, 20); // random values to start
 hist.fri = Array.rand(288, 0, 20); // random values to start
 hist.sat = Array.rand(288, 0, 20); // random values to start
 
-hist.count = (); // another dictionary to count the days elapsted
-hist.count.sun = 1;
-hist.count.mon = 1;
-hist.count.tue = 1;
-hist.count.wed = 1;
-hist.count.thu = 1;
-hist.count.fri = 1;
-hist.count.sat = 1;
+hist.dayCount = (); // another dictionary to count the days elapsted
+hist.dayCount.sun = 1;
+hist.dayCount.mon = 1;
+hist.dayCount.tue = 1;
+hist.dayCount.wed = 1;
+hist.dayCount.thu = 1;
+hist.dayCount.fri = 1;
+hist.dayCount.sat = 1;
 
 hist.calc = {|dict, day, new|
   var old, array;
-  old = dict.at(day) * (dict.count.at(day)-1); // calculate the weights
+  old = dict.at(day) * (dict.dayCount.at(day)-1); // calculate the weights
   array = old + new; // add the two arrays together
-  array = array/dict.count.at(day); // get the average
+  array = array/dict.dayCount.at(day); // get the average
   dict.put(day, array); // set it internally
   // array; // make sure to return the new average
 };
 
-hist.countDay = {|dict, day|
-  dict.count.put(day, dict.count.at(day) + 1); // add another day
-  // dict.count.at(day) = dict.count.at(day) + 1; // add another day
+hist.dayCountDay = {|dict, day|
+  dict.dayCount.put(day, dict.dayCount.at(day) + 1); // add another day
+  // dict.dayCount.at(day) = dict.dayCount.at(day) + 1; // add another day
 };
 
 hist.getHistory = {|dict, day, date|
   date = (6 * date.hour.asInteger) + (date.minute.asInteger/10).round; // get the index of the time
-  dict.count.at(day)[date]; // return the value
+  dict.dayCount.at(day)[date]; // return the value
 };
 
 // fucntion not necessary?
@@ -51,7 +51,7 @@ hist.getCurrentCount{|dict|
 hist.makeArchive = {|dict|
   var path, archive = (); // an empty dict for the Archive
   path = parent.thisDir++"/archives/"++Date.getDate.stamp; // get the path
-  archive.counts = dict.count; // the number of days that have elapsted
+  archive.dayCounts = dict.dayCount; // the number of days that have elapsted
   archive.history = (
     sun: hist.sun,
     mon: hist.mon,
@@ -69,7 +69,7 @@ hist.makeArchive = {|dict|
 hist.restore = {|dict, path|
   var archive;
   archive = Object.readArchive(path); // read in the Archive
-  hist.count = archive.count; // set the days that have elapsed
+  hist.dayCount = archive.dayCount; // set the days that have elapsed
   archive.history.keysValuesDo{|key, value|
     hist.put(key, value); // set it
   };
