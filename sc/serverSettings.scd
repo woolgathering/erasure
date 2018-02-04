@@ -9,7 +9,7 @@
 {|parent|
   var server = parent.server;
 
-  Server.supernova; // use supernova (Linux only)
+  Server.scsynth; // use supernova (Linux only)
   server.options.numOutputBusChannels = 17; // 17 output (16.1)
   server.options.numInputBusChannels = 0; // no input
   server.options.memSize = 2.pow(16); // lots of memory; don't get cheap on me
@@ -18,6 +18,7 @@
   server.options.numAudioBusChannels = 1024; // default value ready to be changed
   server.options.maxSynthDefs = 2048; // twice as large as default
   server.options.maxNodes = 2048; // double
+  server.options.numWireBufs = 256;
   server.options.loadDefs = false; // we have everything we need here
   server.options.threads = nil; // default to 1 per CPU on supernova
 }
