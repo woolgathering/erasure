@@ -1,6 +1,8 @@
 {|parent|
 var hist = ();
 
+hist.tmpArray = Array.fill(288, 0); // a temporary array (this will be made anew every day)
+
 // arrays to hold the number of visitors every 5 minutes as set by updateVisitors()
 hist.sun = Array.rand(288, 0, 20); // random values to start
 hist.mon = Array.rand(288, 0, 20); // random values to start
@@ -49,7 +51,7 @@ hist.getCurrentCount{|dict|
 
 // a function to save the history to an Archive
 hist.makeArchive = {|dict|
-  var path, archive = (); // an empty dict for the Archive
+  var path, archive = (), file; // an empty dict for the Archive
   path = parent.thisDir++"/archives/"++Date.getDate.stamp; // get the path
   archive.dayCounts = dict.dayCount; // the number of days that have elapsted
   archive.history = (
