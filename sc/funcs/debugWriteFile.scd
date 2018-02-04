@@ -94,7 +94,7 @@
         5.wait; // wait 5 seconds
       };
       while(iterations<10) {0.5.wait} {task.stop; file.close}; // stop the task after 10 iterations
-    }).run;
+    }).play;
   };
 
 }
