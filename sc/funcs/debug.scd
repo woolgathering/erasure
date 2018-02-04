@@ -10,9 +10,9 @@
   sections = parent.sections;
 
   if(level>0) {
-
     // always post this information first
     "DEBUG INFO:\n\n".post;
+    Date.getDate.postln; // post the date and time
     sections.keysValuesDo{|sectionName, dict|
       "%:\n".format(sectionName).toUpper.post; // post the section name
       "\tNumber of episodes: %\n".postf(dict.episodes.size); // number of episodes
@@ -34,7 +34,8 @@
         debugFunc = {
           "Debugging...\n\n".post; // two newlines
           "Avg. CPU: %\n".postf(parent.server.avgCPU);
-          "Peak CPU: %\n\n".postf(parent.server.peakCPU);
+          "Peak CPU: %\n".postf(parent.server.peakCPU);
+          "---------------------------------\n\n".post;
         };
       }
       {2} {
@@ -50,6 +51,7 @@
           parent.busses.sectionFader.get({|val|
             "\tSection Fader: %\n".postf(val); // where are we in the sections
           });
+          "---------------------------------\n\n".post;
         };
       }
       { // default function: level>2
@@ -75,7 +77,8 @@
             dict.busses.episodeFader.get({|val|
               "\tBus Position: %\n".postf(val)
             });
-          });
+          };
+          "---------------------------------\n\n".post;
         };
       }
 
@@ -86,6 +89,6 @@
       debugFunc.();
       interval.wait; // wait the interval
     };
-  }).run;
+  }).play;
 
 }

@@ -8,7 +8,7 @@
 ////////////////////////
 
 {|parent|
-  var vis, server, oscFuncs, crest, flatness, fade, visArrays;
+  var vis, server, oscFuncs, distort, slice, localization, visArrays;
   vis = (); // an empty dictionary for the visuals
   vis.put(\interval, 10); // the default interpolation interval in seconds (see the forked visual routine in updateVisitors() at the bottom)
   oscFuncs = (); // an emtpy dictionary

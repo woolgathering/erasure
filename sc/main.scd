@@ -1,13 +1,8 @@
 (
 var parent;
-
-parent = (); // an empty dict
-~parent = parent; // capture it in the global environment so we can interact with it later
-parent.thisDir = "/home/roger/Documents/jacob/pieces/erasure"; // this directory
-parent.server = Server.default; // to make sure all things are correct
-parent.demoMode = true; // demo mode to not read from sensors?
+// parent = (); // an empty dict
+parent = ~parent; // capture it in the global environment so we can interact with it later
 parent.freeables = List.new(0); // an emtpy list for things that can be freed
-parent.spat = File.include(parent.thisDir++"/sc/dicts/vbapSpat.scd", parent); // compile and evaluate the spat diction.
 parent.hist = File.include(parent.thisDir++"/sc/dicts/hist.scd", parent); // compile and evaluate the hist dictionary
 parent.vis = File.include(parent.thisDir++"/sc/dicts/vis.scd", parent); // compile and evaluate the visual dictionary
 parent.timer = DayTimer.(\erasure); // a DayTimer for the installation
@@ -25,11 +20,6 @@ parent.sendAlert = File.include(parent.thisDir++"/sc/funcs/sendAlert.scd"); // s
 parent.sendEmail = File.include(parent.thisDir++"/sc/funcs/sendEmail.scd"); // send an email with information
 parent.doChecks = File.include(parent.thisDir++"/sc/funcs/doChecks.scd"); // check to make sure everything is still functioning as it should
 
-// load all the synthdefs in the /sc/synths/ directory
-(parent.thisDir++"/sc/synths/*.scd").pathMatch.do{|path|
-  File.include(path, parent); // evaluate the file; no need for return
-};
-
 parent.busses = (
   mainOut: Bus.audio(parent.server, 16),
   rev: Bus.audio(parent.server, 16),
@@ -37,14 +27,10 @@ parent.busses = (
   sectionFader: Bus.control(parent.server, 1), // fader for the sections
 );
 
-parent.groups = (
-  sections: Group.new(parent.server, \addToHead),
-  revAndOut: Group.after(parent.groups.sections)
-);
-
-/////// debugging ///////
-File.include(parent.thisDir++"/sc/funcs/debug.scd").(parent, level: 0, interval: 15); // start the debug function
-/////////////////////////
+// the two main groups that capture all the sections and the one that captures the reverb and output
+parent.groups = ();
+parent.groups.put(\sections, Group.new(parent.server, \addToHead));
+parent.groups.put(\revAndOut, Group.after(parent.groups.sections));
 
 ////////
 /*
@@ -53,24 +39,38 @@ File.include(parent.thisDir++"/sc/funcs/debug.scd").(parent, level: 0, interval:
 ////////
 fork {
   // actually prepare the reverb
-  parent.prepareReverb(parent, parent.thisDir++"/sound/ir/MYPATH.wav"); // prepare the reverb
+  parent.prepareReverb(parent.thisDir++"/sound/ir/Batcave.wav"); // prepare the reverb
+  parent.server.sync;
+
+  // load all the synthdefs in the /sc/synths/ directory
+  File.include(parent.thisDir++"/sc/synths/synths.scd", parent); // <---- things only work when loaded from the SAME FILE???? Check if it's a bug...
+
+  parent.spat = File.include(parent.thisDir++"/sc/dicts/vbapSpat.scd", parent); // compile and evaluate the spat diction.
+  parent.server.sync;
 
   // run the startup function after reverb since it starts the reverb synth
-  parent.startup.(parent);
+  parent.startup;
+  parent.server.sync;
 
   // make the sections
   parent.sections = (); // an empty dictionary
-  5.do{|i|
+  1.do{|i|
     var sectionName, episodeFiles, thisSection;
+    "Making Section %...\n".postf(i+1); // tell us what section we're on during boot
     sectionName = "section%".format(i+1).asSymbol; // get the name
     episodeFiles = (parent.thisDir++"/sound/%/*.wav".format(sectionName)).pathMatch; // get the directory
-    thisSection = parent.makeSection(episodeFiles, overlap: 0.25, start: i+1, end: i+2); // default arguments. Make sure start and end make sense!
+    thisSection = parent.makeSection(episodeFiles, 0.25, i+1, i+2); // default arguments. Make sure start and end make sense!
+    parent.server.sync; // wait for stuff to finish
     parent.sections.put(sectionName, thisSection); // remember this section
   };
 
   // get the number of visitors and set the thing in motion. This also occurs every 10 minutes on the minute but appears here since we can't be sure we will start the work on the minute
   parent.updateVisitors;
+  parent.server.sync;
 
-}
+  //////// debugging ///////
+  File.include(parent.thisDir++"/sc/funcs/debug.scd").(parent, level: parent.debugLevel, interval: 10); // start the debug function
+  /////////////////////////
+};
 
 )

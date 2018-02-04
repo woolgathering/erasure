@@ -17,7 +17,7 @@
   busses.pipeBus = Bus.audio(server, 16); // a bus to pipe out stuff from each episode post-spatialization
 
   groups = (); // an empty dict for groups
-  groups.master = Group.new; // a new group to encapsulate all of the synths for the section
+  groups.master = Group.tail(parent.groups.sections); // a new group to encapsulate all of the synths for the section
   groups.players = Group.head(groups.master); // a group for the synth players
   groups.fx = Group.tail(groups.master); // a group for the processing
   groups.spat = Group.tail(groups.master); // a group for the spatailization of each (eats lots of CPU??)
@@ -45,7 +45,7 @@
 
     // or just this...
     sectionFader = Synth(\section_LFO,
-      [outBus: busses.episodeFader, speed: rrand(60*60, 90*60).reciprocal, pause: 1],
+      [outBus: busses.episodeFader, speed: rrand(600,700).reciprocal, pause: 0],
       target: groups.master, addAction: \addToHead
     );
 
@@ -64,13 +64,14 @@
       spatBus = Bus.audio(server, numChannels); // a bus for spatailization
       server.sync; // wait
       parent.freeables.addAll([buffer,fxBus]); // add this stuff to freeables
+      1.wait; // just to be sure
 
       // set the player
       player = Synth("playFile_%ch".format(numChannels).asSymbol,
         [
           outBus: fxBus, buff: buffer, envBuff: parent.sineEnv,
-          envBuffSize: parent.sineEnv.size, pos: busses.episodeFader.asMap,
-          start: divisions[i][0], end: divisions[i][1], pause: 1
+          envBuffSize: parent.sineEnv.numFrames, pos: busses.episodeFader.asMap,
+          start: divisions[i][0], end: divisions[i][1], pause: 0
         ], // default to paused
         target: groups.players, addAction: \addToTail
       );
@@ -79,9 +80,7 @@
       // set the processing
       fx = Synth("fxSynth_%ch".format(numChannels).asSymbol,
         [
-          inBus: fxBus, outBus: spatBus, impulseResp: parent.impulse,
-          noiseLev: 0, dryWetMix: 0.5, distort: 0, amp: parent.busses.volume.asMap,
-          pause: 1
+          inBus: fxBus, outBus: spatBus, noiseLev: 0, dryWetMix: 0.5, distort: 0, pause: 0
         ],
         target: groups.fx, addAction: \addToHead
       );
@@ -90,14 +89,15 @@
       // spatialize and send it out, braj. Initial speed is between 30 and 45 seconds of movement, spread varies depending on numChannels: the more channels there are, the lower the spread.
       spat = Synth("VBAP_%ch".format(numChannels).asSymbol,
         [
-          inBus: spatBus, outBus: busses.pipeBus, vbapBuff: parent.spat.buff, aziSpeed: rrand(0.0222, 0.0333),
-          eleSpeed: rrand(0.0222, 0.0333), spread: numChannels.reciprocal * rrand(150,175), pause: 1
-        ]
+          inBus: spatBus, outBus: busses.pipeBus, vbapBuff: parent.spat.buff.bufnum,
+          aziSpeed: rrand(0.0222, 0.0333), eleSpeed: rrand(0.0222, 0.0333),
+          spread: numChannels.reciprocal * rrand(150,175), pause: 0
+        ],
         target: groups.spat, addAction: \addToHead
       );
 
       // put it all together
-      thisEpisode = (player: player, fx: fx, spat: spat, buffer: buffer);
+      thisEpisode = (player: player, fx: fx, spat: spat, buffer: buffer, spatBus: spatBus, fxBus: fxBus);
       episodes.put(episodeName, thisEpisode); // remember it
     };
   };
@@ -106,12 +106,12 @@
   pipe = Synth(\sectionPipe,
     [
       inBus: busses.pipeBus, outBus: parent.busses.rev, fader: parent.busses.sectionFader.asMap,
-      envBuff: parent.sineEnv, envBuffSize: parent.sineEnv.size, start: start, end: end
+      envBuff: parent.sineEnv, envBuffSize: parent.sineEnv.numFrames, start: start, end: end
     ],
     target: groups.master, addAction: \addToTail
   );
 
   server.sync;
-  sectionDict = (groups: groups, busses: busses, episodes: episodes, divisions: divisions);
+  sectionDict = (groups: groups, busses: busses, episodes: episodes, divisions: divisions, pipe: pipe);
   sectionDict; // return sectionDict
 }
