@@ -9,7 +9,7 @@
       mailString = "cat % | mail -s % -a % jlsundst@ucsd.edu".format(path, subject, attachment);
     } {
       // else it's an Array with multiple attachments
-      mailString = "cat % | mail -s %"
+      mailString = "cat % | mail -s %";
       attachment.do{|path|
         mailString = mailString ++ " -a %".format(path); // append the attachment path with it's own flag
       };
