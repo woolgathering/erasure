@@ -3,7 +3,7 @@
   SynthDef(\sectionPipe, {|inBus, outBus, fader, envBuff, envBuffSize, start, end, pause = 0|
     var sig, env;
     sig = In.ar(inBus, 16); // 16 channels in
-    fader = fader.lag2(0.1); // 10 second lag (see Routine in updateVisitors)
+    fader = fader.lag2(10); // 10 second lag (see Routine in updateVisitors)
     fader = fader.linlin(start, end, 0, envBuffSize).clip(0,envBuffSize); // convert shit; clip it before passing
     env = IndexL.kr(envBuff, fader).lag2; // get our current amplitude and smooth it a bit
     Out.ar(outBus, sig*env);
@@ -72,9 +72,10 @@
 
   SynthDef(\playFile_4ch, {|outBus = 0, buff, envBuff, envBuffSize, pos, start = 0, end = 1, pause = 0|
     var sig, env;
-    sig = DiskIn.ar(4, buff, 1);
+    sig = VDiskIn.ar(4, buff, BufRateScale.kr(buff), loop: 1);
     pos = pos.linlin(start, end, 0, envBuffSize).clip(0,envBuffSize); // convert stuff; clip it before passing
     env = IndexL.kr(envBuff, pos.lag2(1)); // get our current amplitude and smooth it a bit
+    PauseSelf.kr(pause);
     sig = sig*env; // multiply
     Out.ar(outBus, sig);
   }).send(parent.server);
@@ -86,12 +87,13 @@
     // sig = NoiseVol.ar(sig, noiseLev); // noise volume before reverb
     // sig = Distortion.ar(sig, dist);
 
-    // PauseSelf.kr(pause);
+    PauseSelf.kr(pause);
     Out.ar(outBus, sig); // send it out
   }).send(parent.server);
 
   SynthDef(\VBAP_4ch, {|outBus, inBus, vbapBuff, aziSpeed = 0.01, eleSpeed = 0.01, spread = 50, pause = 1|
     var sig, azi, ele;
+    PauseSelf.kr(pause);
     sig = In.ar(inBus, 4); // signal in
     // -180/+180
     azi = [
@@ -103,7 +105,7 @@
     azi = azi + LFNoise1.kr(aziSpeed*0.33).range(-180,180); // rotate the signal slowly
     azi = azi.collect{|ugen| ugen.circleRamp};
     // essentially from -90 to something like -30 on one side to the opposite on the other
-    ele = 4.collect{LFNoise1.kr(eleSpeed).range(30,90).circleRamp(-90,-30)};
+    ele = 4.collect{LFNoise1.kr(eleSpeed).range(0,30).circleRamp(-90,30)};
     sig = VBAP.ar(16, sig, vbapBuff, azi, ele, spread.lag2); // spatialize me
     sig = Mix(sig); // mix it down
     // sig = NoiseVol.ar(sig, lev); // put noise volume here to be on each speaker??? Could be more interesting
