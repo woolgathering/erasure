@@ -8,7 +8,7 @@
 
 var numSpeakers, interval, amp, firstOutputBus;
 
-numSpeakers = 4; // 16.1
+numSpeakers = 16; // RML
 interval = 2; // two seconds
 amp = -6.dbamp;
 firstOutputBus = 0;
