@@ -61,7 +61,7 @@
         // also set the localized distorion, noiseVol, reverb, etc.
 
         // and master volume!!!
-        parent.busses.volume.set(0.5);
+        parent.busses.volume.set(0.707);
 
         counter = counter + 1;
         10.wait; // wait 10 seconds.

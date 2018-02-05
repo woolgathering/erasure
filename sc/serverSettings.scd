@@ -9,8 +9,15 @@
 {|parent|
   var server = parent.server;
 
-  Server.scsynth; // use supernova (Linux only)
-  server.options.numOutputBusChannels = 17; // 17 output (16.1)
+  Platform.case(
+    \osx, {
+      server.options.device = ServerOptions.devices[4]; // use the RME fireface  
+    },
+    \linux, {
+      Server.supernova; // use supernova (Linux only)
+    }
+  );
+  server.options.numOutputBusChannels = 17; // 16 output (16.2). Subs are routed externally
   server.options.numInputBusChannels = 0; // no input
   server.options.memSize = 2.pow(16); // lots of memory; don't get cheap on me
   server.options.sampleRate = 48000; // 48k
@@ -18,7 +25,7 @@
   server.options.numAudioBusChannels = 1024; // default value ready to be changed
   server.options.maxSynthDefs = 2048; // twice as large as default
   server.options.maxNodes = 2048; // double
-  server.options.numWireBufs = 256;
+  server.options.numWireBufs = 128; // double
   server.options.loadDefs = false; // we have everything we need here
   server.options.threads = nil; // default to 1 per CPU on supernova
 }
