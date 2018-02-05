@@ -45,7 +45,7 @@
 
     // or just this...
     sectionFader = Synth(\section_LFO,
-      [outBus: busses.episodeFader, speed: rrand(600,700).reciprocal, pause: 0],
+      [outBus: busses.episodeFader, speed: rrand(600,700).reciprocal, pause: 1],
       target: groups.master, addAction: \addToHead
     );
 
@@ -71,7 +71,7 @@
         [
           outBus: fxBus, buff: buffer, envBuff: parent.sineEnv,
           envBuffSize: parent.sineEnv.numFrames, pos: busses.episodeFader.asMap,
-          start: divisions[i][0], end: divisions[i][1], pause: 0
+          start: divisions[i][0], end: divisions[i][1], pause: 1
         ], // default to paused
         target: groups.players, addAction: \addToTail
       );
@@ -80,7 +80,7 @@
       // set the processing
       fx = Synth("fxSynth_%ch".format(numChannels).asSymbol,
         [
-          inBus: fxBus, outBus: spatBus, noiseLev: 0, dryWetMix: 0.5, distort: 0, pause: 0
+          inBus: fxBus, outBus: spatBus, noiseLev: 0, dryWetMix: 0.5, distort: 0, pause: 1
         ],
         target: groups.fx, addAction: \addToHead
       );
@@ -91,7 +91,7 @@
         [
           inBus: spatBus, outBus: busses.pipeBus, vbapBuff: parent.spat.buff.bufnum,
           aziSpeed: rrand(0.0222, 0.0333), eleSpeed: rrand(0.0222, 0.0333),
-          spread: numChannels.reciprocal * rrand(150,175), pause: 0
+          spread: numChannels.reciprocal * rrand(150,175) * 1.5, pause: 1
         ],
         target: groups.spat, addAction: \addToHead
       );
