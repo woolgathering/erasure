@@ -42,8 +42,8 @@
       case
         {faderVal<2.5} {parent.pauseGroups([1,1,0,0,0])}
         {(faderVal>2.5) and: (faderVal<3.5)} {parent.pauseGroups([0,1,1,0,0])}
-        {(faderVal>3.5) and: (faderVal<4.5)} {parent.pauseGroups([0,1,1,0,0])}
-        {faderVal>4.5} {parent.pauseGroups([0,1,1,0,0])};
+        {(faderVal>3.5) and: (faderVal<4.5)} {parent.pauseGroups([0,0,1,1,0])}
+        {faderVal>4.5} {parent.pauseGroups([0,0,0,1,1])};
     }
   );
 
@@ -59,7 +59,7 @@
   // reverb synth
   parent.synths.reverb = Synth(\reverb,
     [
-    inBus: parent.busses.rev, outBus: parent.busses.mainOut, initDel: 0.02, dry: 1, wet: 0, leak: 0.01, hp: 150,
+    inBus: parent.busses.rev, outBus: parent.busses.mainOut, initDel: 0.02, dry: 0.8, wet: 0.2, leak: 0.005, hp: 150,
     impulseBuffs: [parent.revBuffs.left, parent.revBuffs.right]
     ],
     target: parent.groups.revAndOut, addAction: \addToHead
