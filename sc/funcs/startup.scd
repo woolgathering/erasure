@@ -57,7 +57,7 @@
   parent.envs.firstHalfSine = Buffer.loadCollection(parent.server, sine[..511]); // a sine envelope, for use in episodes
   parent.envs.secondHalfSine = Buffer.loadCollection(parent.server, sine[512..]); // a sine envelope, for use in episodes
   parent.envs.table = Buffer.loadCollection(parent.server, table); // for use between sections
-  parent.envs.firstHalfTable Buffer.loadCollection(parent.server, table[..511]); // for use between sections
+  parent.envs.firstHalfTable = Buffer.loadCollection(parent.server, table[..511]); // for use between sections
   parent.envs.lastHalfTable = Buffer.loadCollection(parent.server, table[512..]); // for use between sections
   parent.freeables.addAll(parent.envs); // add all these to the freeables
 

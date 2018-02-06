@@ -66,8 +66,8 @@
       server.sync; // wait
       parent.freeables.addAll([buffer,fxBus]); // add this stuff to freeables
       switch (i) // choose the correct envelope
-        {0} {envelope = parent.envs.firstHalfSine}, // when it's the first episode
-        {episodeFiles.size-1} {envelope = parent.envs.secondHalfSine}, // when it's the last episode
+        {0} {envelope = parent.envs.firstHalfSine} // when it's the first episode
+        {episodeFiles.size-1} {envelope = parent.envs.secondHalfSine} // when it's the last episode
         {envelope = parent.envs.sine}; // default
       1.wait; // just to be sure
 
