@@ -43,7 +43,7 @@ fork {
   parent.server.sync;
 
   // load all the synthdefs in the /sc/synths/ directory
-  File.include(parent.thisDir++"/sc/synths/synths.scd", parent); // <---- things only work when loaded from the SAME FILE???? Check if it's a bug...
+  File.include(parent.thisDir++"/sc/synths/synths_splayAz.scd", parent); // <---- things only work when loaded from the SAME FILE???? Check if it's a bug...
 
   parent.spat = File.include(parent.thisDir++"/sc/dicts/vbapSpat.scd", parent); // compile and evaluate the spat diction.
   parent.server.sync;
