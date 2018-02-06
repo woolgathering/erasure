@@ -11,21 +11,21 @@
 
   Platform.case(
     \osx, {
-      server.options.device = ServerOptions.devices[4]; // use the RME fireface  
+      server.options.device = ServerOptions.devices[4]; // use the RME fireface
     },
     \linux, {
-      Server.supernova; // use supernova (Linux only)
+      // Server.supernova; // use supernova (Linux only)
     }
   );
-  server.options.numOutputBusChannels = 17; // 16 output (16.2). Subs are routed externally
+  server.options.numOutputBusChannels = 16; // 16 output (16.2). Subs are routed externally
   server.options.numInputBusChannels = 0; // no input
   server.options.memSize = 2.pow(16); // lots of memory; don't get cheap on me
   server.options.sampleRate = 48000; // 48k
   server.options.memoryLocking = true; // locking memory is a good thing?
-  server.options.numAudioBusChannels = 1024; // default value ready to be changed
-  server.options.maxSynthDefs = 2048; // twice as large as default
-  server.options.maxNodes = 2048; // double
+  server.options.numAudioBusChannels = 2048; // default value ready to be changed (double)
+  server.options.maxSynthDefs = 4096; // quadruple as large as default
+  server.options.maxNodes = 4096; // quadruple
   server.options.numWireBufs = 128; // double
   server.options.loadDefs = false; // we have everything we need here
-  server.options.threads = nil; // default to 1 per CPU on supernova
+  server.options.threads = nil; // default to 1 per CPU on supernovas
 }
