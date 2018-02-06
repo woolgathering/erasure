@@ -5,8 +5,8 @@
 */
 ////////////////////////////////////
 
-{|parent|
-  var hist, good, errorMsg;
+{|parent, overlap|
+  var hist, good, errorMsg, sine, table;
   parent.synths = (); // an emtpy dictionary for the synths
   hist = parent.hist; // make life easier
   parent.timer = DayTimer(\mainLoop); // make a main timer that we'll put everything in
@@ -47,10 +47,19 @@
     }
   );
 
-  ////////
-  // make the sine envelope as a buffer
-  ////////
-  parent.sineEnv = Buffer.loadCollection(s, Env.sine(600).asSignal.resamp1(1024));
+  ////////////////////////////////
+  // Make the envelopes
+  ////////////////////////////////
+  sine = Env.sine(600).asSignal.resamp1(1024); // a single period of a sine
+  table = Env(levels: [0,1,1,0], times: [overlap,1-(overlap*2),overlap], curve: \sin).asSignal.resamp1(1024);
+  parent.envs = (); // an empty dict for envelopes
+  parent.envs.sine = Buffer.loadCollection(parent.server, sine); // a sine envelope, for use in episodes
+  parent.envs.firstHalfSine = Buffer.loadCollection(parent.server, sine[..511]); // a sine envelope, for use in episodes
+  parent.envs.secondHalfSine = Buffer.loadCollection(parent.server, sine[512..]); // a sine envelope, for use in episodes
+  parent.envs.table = Buffer.loadCollection(parent.server, table); // for use between sections
+  parent.envs.firstHalfTable Buffer.loadCollection(parent.server, table[..511]); // for use between sections
+  parent.envs.lastHalfTable = Buffer.loadCollection(parent.server, table[512..]); // for use between sections
+  parent.freeables.addAll(parent.envs); // add all these to the freeables
 
   ////////////////////////////
   // Start synths through which everything is routed

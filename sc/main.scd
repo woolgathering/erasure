@@ -49,17 +49,17 @@ fork {
   parent.server.sync;
 
   // run the startup function after reverb since it starts the reverb synth
-  parent.startup;
+  parent.startup(0.1); // startup as 10% overlap between sections
   parent.server.sync;
 
   // make the sections
   parent.sections = (); // an empty dictionary
-  1.do{|i|
+  5.do{|i|
     var sectionName, episodeFiles, thisSection;
     "Making Section %...\n".postf(i+1); // tell us what section we're on during boot
     sectionName = "section%".format(i+1).asSymbol; // get the name
     episodeFiles = (parent.thisDir++"/sound/%/*.wav".format(sectionName)).pathMatch; // get the directory
-    thisSection = parent.makeSection(episodeFiles, 0.25, i+1, i+2); // default arguments. Make sure start and end make sense!
+    thisSection = parent.makeSection(episodeFiles, 0.1, i+1, i+2); // default arguments. Make sure start and end make sense!
     parent.server.sync; // wait for stuff to finish
     parent.sections.put(sectionName, thisSection); // remember this section
   };
