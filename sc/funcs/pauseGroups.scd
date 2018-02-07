@@ -36,10 +36,10 @@
     };
   if(array[4]==0)
     {parent.sections.section5.run(false);
-      if(debug>0) {"Section5 paused!".postln};
+      if(debug>0) {"Section5 paused!\n".postln};
     }
     {parent.sections.section5.run(true);
-      if(debug>0) {"Section5 running...".postln};
+      if(debug>0) {"Section5 running...\n".postln};
     };
 
 }
