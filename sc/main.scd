@@ -14,6 +14,7 @@ parent.delineateSections = File.include(parent.thisDir++"/sc/funcs/delineateSect
 parent.makeSection = File.include(parent.thisDir++"/sc/funcs/makeSection.scd"); // function that makes the sections
 parent.prepareReverb = File.include(parent.thisDir++"/sc/funcs/prepareReverb.scd"); // function to prepare the reverb
 parent.demoPattern = File.include(parent.thisDir++"/sc/funcs/demoMode.scd"); // get the demo mode pattern
+parent.pauseGroups = File.include(parent.thisDir++"/sc/funcs/pauseGroups.scd");
 
 // installation status functions
 parent.sendAlert = File.include(parent.thisDir++"/sc/funcs/sendAlert.scd"); // send an alart if broken
