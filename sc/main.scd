@@ -39,13 +39,13 @@ parent.groups.put(\revAndOut, Group.after(parent.groups.sections));
 ////////
 fork {
   // actually prepare the reverb
-  parent.prepareReverb(parent.thisDir++"/sound/ir/Batcave.wav"); // prepare the reverb
+  parent.prepareReverb(parent.thisDir++"/sound/ir/BatteryBenson.wav"); // prepare the reverb
   parent.server.sync;
 
   // load all the synthdefs in the /sc/synths/ directory
   File.include(parent.thisDir++"/sc/synths/synths_splayAz.scd", parent); // <---- things only work when loaded from the SAME FILE???? Check if it's a bug...
 
-  parent.spat = File.include(parent.thisDir++"/sc/dicts/vbapSpat.scd", parent); // compile and evaluate the spat diction.
+  parent.spat = File.include(parent.thisDir++"/sc/dicts/vbapSpat.scd", parent); // compile and evaluate the spat diction. This needs to stay for now; check commit 3be928c0659144ea87ddd023fe18c426b5570d40 comment
   parent.server.sync;
 
   // run the startup function after reverb since it starts the reverb synth
