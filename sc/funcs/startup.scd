@@ -10,10 +10,11 @@
   parent.synths = (); // an emtpy dictionary for the synths
   hist = parent.hist; // make life easier
   parent.timer = DayTimer(\mainLoop); // make a main timer that we'll put everything in
+  parent.timer.start; // start the timer
 
   // this runs every 5 minutes to update the 'historical record'
   parent.timer.putDate(\checkStatus,
-    {|date| #[0,5,10,15,20,25,30,35,40,45,50,55].includes(date.minute)}, // true every 5 minutes
+    {|date| #[0,5,10,15,20,25,30,35,40,45,50,55].includes(date.minute) && date.second==0}, // true every 5 minutes
     {
       if(parent.debugLevel>0) {Date.getDate.postln}; // if we're debugging, post the time every 5 minutes
       parent.updateVisitors; // run the funtion that updates everything
@@ -36,14 +37,16 @@
   parent.timer.putDate(\pauseGroups,
     {|date| #[0,30].includes(date.second)}, // every 30 seconds
     {
+      "Pausing nodes...".postln;
       // given a sectionFader position, pause the groups appropriately:
-      var faderVal;
-      parent.busses.sectionFader.get({|val| faderVal = val}); // get the value of the section fader
-      case
-        {faderVal<2.5} {parent.pauseGroups([1,1,0,0,0])}
-        {(faderVal>2.5) and: (faderVal<3.5)} {parent.pauseGroups([0,1,1,0,0])}
-        {(faderVal>3.5) and: (faderVal<4.5)} {parent.pauseGroups([0,0,1,1,0])}
-        {faderVal>4.5} {parent.pauseGroups([0,0,0,1,1])};
+      parent.busses.sectionFader.get({|val|
+        case
+          {val<2.5} {parent.pauseGroups([1,1,0,0,0])}
+          {(val>2.4) and: (val<3.6)} {parent.pauseGroups([0,1,1,0,0])}
+          {(val>3.4) and: (val<4.6)} {parent.pauseGroups([0,0,1,1,0])}
+          {val>4.4} {parent.pauseGroups([0,0,0,1,1])};
+      }); // get the value of the section fader
+
     }
   );
 

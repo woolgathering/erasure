@@ -16,7 +16,7 @@
     sections.keysValuesDo{|sectionName, dict|
       "%:\n".format(sectionName).toUpper.post; // post the section name
       "\tNumber of episodes: %\n".postf(dict.episodes.size); // number of episodes
-      "\tDivisions of sections: %\n\n".postf(dict.divisions); // post the divisions
+      "\tDivisions of sections: %\n\n".postf(dict.divisions.round(0.01)); // post the divisions
       dict.episodes.keysValuesDo{|episodeName, dict|
         "\t%:\n".format(episodeName).toUpper.post; // the name of the episodeSection
         "\t\tPath: %\n".postf(dict.buffer.path); // post the path
@@ -33,8 +33,8 @@
       {1} {
         debugFunc = {
           "Debugging...\n\n".post; // two newlines
-          "Avg. CPU: %\n".postf(parent.server.avgCPU.round(0.1);
-          "Peak CPU: %\n".postf(parent.server.peakCPU.round(0.1);
+          "Avg. CPU: %\n".postf(parent.server.avgCPU.round(0.1));
+          "Peak CPU: %\n".postf(parent.server.peakCPU.round(0.1));
           "---------------------------------\n\n".post;
         };
       }
@@ -42,8 +42,8 @@
         debugFunc = {
           cond = false; // set it to false
           "Debugging...\n\n".post; // two newlines
-          "Avg. CPU: %\n".postf(parent.server.avgCPU.round(0.1);
-          "Peak CPU: %\n\n".postf(parent.server.peakCPU.round(0.1);
+          "Avg. CPU: %\n".postf(parent.server.avgCPU.round(0.1));
+          "Peak CPU: %\n\n".postf(parent.server.peakCPU.round(0.1));
 
           "Parent Bus Positions:\n".post;
           parent.busses.volume.get({|val|
@@ -64,8 +64,8 @@
         debugFunc = {
           cond = false; // set it to false
           "Debugging...\n\n".post; // two newlines
-          "Avg. CPU: %\n".postf(parent.server.avgCPU.round(0.1);
-          "Peak CPU: %\n\n".postf(parent.server.peakCPU.round(0.1);
+          "Avg. CPU: %\n".postf(parent.server.avgCPU.round(0.1));
+          "Peak CPU: %\n\n".postf(parent.server.peakCPU.round(0.1));
 
           "Parent Bus Positions:\n".post;
           parent.busses.volume.get({|val|
