@@ -1,8 +1,9 @@
 (
 ~parent = ();
 ~parent.server = Server.default;
-~parent.thisDir = "~/Documents/jacob/pieces/erasure".standardizePath;
-~parent.debugLevel = 3;
+~parent.thisDir = "~/Desktop/erasure/erasure".standardizePath;
+~parent.numSecs = 5;
+~parent.debugLevel = 2;
 ~parent.demoMode = true;
 
 File.include(~parent.thisDir ++ "/sc/serverSettings.scd", ~parent);
@@ -17,17 +18,7 @@ File.include(~parent.thisDir ++ "/sc/serverSettings.scd", ~parent);
 ~parent.busses.volume.scope;
 ~parent.server.plotTree;
 ~parent.server.meter
-~parent.sections.section1.busses.pipeBus.scope
+~parent.sections.section1.busses.fxBus.scope
+~parent.server.makeGui
 
 ~parent.spat
-
-m = Monitor.new;
-
-m.play(69,1,0,1)
-Stethoscope(s, 4, 53)
-2.pow(15)
-
-// 0.2.wait;
-~parent.sections.section1.episodes.episode1.keysValuesDo{|key, val| "%:\t%\n".postf(key,val)};
-
-~parent.revBuffs
