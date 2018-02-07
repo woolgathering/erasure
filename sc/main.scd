@@ -5,7 +5,7 @@ parent = ~parent; // capture it in the global environment so we can interact wit
 parent.freeables = List.new(0); // an emtpy list for things that can be freed
 parent.hist = File.include(parent.thisDir++"/sc/dicts/hist.scd", parent); // compile and evaluate the hist dictionary
 parent.vis = File.include(parent.thisDir++"/sc/dicts/vis.scd", parent); // compile and evaluate the visual dictionary
-parent.timer = DayTimer.(\erasure); // a DayTimer for the installation
+parent.timer = DayTimer(\erasure); // a DayTimer for the installation
 
 parent.startup = File.include(parent.thisDir++"/sc/funcs/startup.scd"); // function that starts the piece. Execute after everything is loaded.
 parent.maintainence = File.include(parent.thisDir++"/sc/funcs/maintainence.scd"); // function that scheudles the events for the day and does maintainence, evaluated at midnight
@@ -68,6 +68,9 @@ fork {
   // get the number of visitors and set the thing in motion. This also occurs every 10 minutes on the minute but appears here since we can't be sure we will start the work on the minute
   parent.updateVisitors;
   parent.server.sync;
+
+  // make the CmdPeriod function
+  File.include(parent.thisDir++"/sc/funcs/cmdPeriod.scd", parent);
 
   //////// debugging ///////
   File.include(parent.thisDir++"/sc/funcs/debug.scd").(parent, level: parent.debugLevel, interval: 10); // start the debug function

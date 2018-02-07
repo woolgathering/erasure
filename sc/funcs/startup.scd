@@ -9,7 +9,7 @@
   var hist, good, errorMsg, sine, table;
   parent.synths = (); // an emtpy dictionary for the synths
   hist = parent.hist; // make life easier
-  parent.timer = DayTimer(\mainLoop); // make a main timer that we'll put everything in
+  // parent.timer = DayTimer(\mainLoop); // make a main timer that we'll put everything in
   parent.timer.start; // start the timer
 
   // this runs every 5 minutes to update the 'historical record'
