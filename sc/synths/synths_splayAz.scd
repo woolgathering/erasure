@@ -5,7 +5,7 @@
     sig = In.ar(inBus, 16); // 16 channels in
     fader = fader.lag2(10); // 10 second lag (see Routine in updateVisitors)
     fader = fader.linlin(start, end, 0, envBuffSize).clip(0,envBuffSize); // convert shit; clip it before passing
-    env = IndexL.kr(envBuff, fader).lag2; // get our current amplitude and smooth it a bit
+    env = IndexL.kr(envBuff, fader).lag2(5); // get our current amplitude and smooth it a bit
     Out.ar(outBus, sig*env);
     PauseSelf.kr(pause);
   }).send(parent.server);
@@ -13,7 +13,7 @@
   SynthDef(\table_LFO, {|outBus, table, speed|
     var sig, indexer;
     indexer = LFTri.kr(speed, iphase: Rand(0,4), mul: 500, add: 500); // a triangle wave to index into the table with an initial phase offset
-    sig = IndexL.kr(table, indexer); // read into the table
+    sig = IndexL.kr(table, indexer).lag2(1); // read into the table
     Out.kr(outBus, sig); // write it to the bus
   }).send(parent.server);
 
@@ -76,7 +76,7 @@
     var sig, env;
     sig = VDiskIn.ar(4, buff, BufRateScale.kr(buff), loop: 1);
     pos = pos.linlin(start, end, 0, envBuffSize).clip(0,envBuffSize); // convert stuff; clip it before passing
-    env = IndexL.kr(envBuff, pos.lag2(1)); // get our current amplitude and smooth it a bit
+    env = IndexL.kr(envBuff, pos.lag2(10)); // get our current amplitude and smooth it a bit
     PauseSelf.kr(pause);
     sig = sig*env; // multiply
     Out.ar(outBus, sig);
