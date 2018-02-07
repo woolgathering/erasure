@@ -1,11 +1,11 @@
 // start section
-{|parent, episodeFiles, overlap = 0.25, start = 0, end = 1|
+{|parent, episodeFiles, overlap = 0.25, start = 0, end = 1, secIdx = 0|
 
   /*
   Start a section with composite episodes. Make everything necessary, including buffers, busses, groups, etc. Currently divides episodes evenly in the section
   */
 
-  var server, sectionDict, groups, busses, buffers, episodes, divisions, sectionFader, pipe, lfoTable, cond;
+  var server, sectionDict, groups, busses, buffers, episodes, divisions, sectionFader, pipe, lfoTable, cond, secEnvelope;
 
   sectionDict = (); // an empty dictionary for this stuff
   episodes = (); // an empty dict for the episodes
@@ -32,19 +32,7 @@
 
   // actually make the section
   fork {
-    // make our LFO table that we use to fade between different episodes
-    // lfoTable = Array.noiseInterpolate(0,1,rrand(19,23),0.1); // a noisey line
-    // lfoTable = lfoTable.resamp2(1000); // resample to size 1000
-    // lfoTable = Buffer.loadCollection(server, lfoTable); // load it on the server as a buffer
-    // server.sync;
-    //
-    // // make the fader for the sections
-    // sectionFader = Synth(\table_LFO,
-    //   [outBus: busses.episodeFader, table: lfoTable, speed: rrand(60*60, 90*60).reciprocal],
-    //   target: groups.master, addAction: \addToHead
-    // );
-
-    // or just this...
+    // move through the episodes in a section
     sectionFader = Synth(\section_LFO,
       [outBus: busses.episodeFader, speed: rrand(600,700).reciprocal, pause: 1],
       target: groups.master, addAction: \addToHead
@@ -76,7 +64,7 @@
         [
           outBus: fxBus, buff: buffer, envBuff: envelope,
           envBuffSize: envelope.numFrames, pos: busses.episodeFader.asMap,
-          start: divisions[i][0], end: divisions[i][1], pause: 1
+          start: divisions[i][0], end: divisions[i][1]
         ], // default to paused
         target: groups.players, addAction: \addToTail
       );
@@ -85,19 +73,15 @@
       // set the processing
       fx = Synth("fxSynth_%ch".format(numChannels).asSymbol,
         [
-          inBus: fxBus, outBus: spatBus, noiseLev: 0, dryWetMix: 0.5, distort: 0, pause: 1
+          inBus: fxBus, outBus: spatBus, noiseLev: 0, dryWetMix: 0.5, distort: 0
         ],
         target: groups.fx, addAction: \addToHead
       );
       server.sync;
 
       // spatialize and send it out, braj. Initial speed is between 30 and 45 seconds of movement, spread varies depending on numChannels: the more channels there are, the lower the spread.
-      spat = Synth("VBAP_%ch".format(numChannels).asSymbol,
-        [
-          inBus: spatBus, outBus: busses.pipeBus, vbapBuff: parent.spat.buff.bufnum,
-          aziSpeed: rrand(0.0222, 0.0333), eleSpeed: rrand(0.0222, 0.0333),
-          spread: numChannels.reciprocal * rrand(150,175) * 1.5, pause: 1
-        ],
+      spat = Synth("spat_%ch".format(numChannels).asSymbol,
+        [inBus: spatBus, outBus: busses.pipeBus],
         target: groups.spat, addAction: \addToHead
       );
 
@@ -111,11 +95,16 @@
   // wait for the above to finish
   // while{cond.not} {0.05.wait};
 
+  switch (secIdx) // choose the correct envelope
+    {0} {secEnvelope = parent.envs.firstHalfTable} // when it's the first episode
+    {parent.numSecs-1} {secEnvelope = parent.envs.lastHalfTable} // when it's the last episode
+    {secEnvelope = parent.envs.table}; // default
+
   // a synth that pipes everything to the main reverb (to control overall fades between sections)
   pipe = Synth(\sectionPipe,
     [
       inBus: busses.pipeBus, outBus: parent.busses.rev, fader: parent.busses.sectionFader.asMap,
-      envBuff: parent.envs.table, envBuffSize: parent.envs.table.numFrames, start: start-overlap, end: end+overlap
+      envBuff: secEnvelope, envBuffSize: secEnvelope.numFrames, start: start-overlap, end: end+overlap
     ],
     target: groups.master, addAction: \addToTail
   );

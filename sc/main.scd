@@ -44,9 +44,10 @@ fork {
   parent.server.sync;
 
   // load all the synthdefs in the /sc/synths/ directory
-  File.include(parent.thisDir++"/sc/synths/synths_splayAz.scd", parent); // <---- things only work when loaded from the SAME FILE???? Check if it's a bug...
+  File.include(parent.thisDir++"/sc/synths/synths_splayAz.scd", parent); // <---- things only work when loaded from the SAME FILE???? Check if it's a bug..
+  parent.server.sync;
 
-  parent.spat = File.include(parent.thisDir++"/sc/dicts/vbapSpat.scd", parent); // compile and evaluate the spat diction. This needs to stay for now; check commit 3be928c0659144ea87ddd023fe18c426b5570d40 comment
+  // parent.spat = File.include(parent.thisDir++"/sc/dicts/vbapSpat.scd", parent); // compile and evaluate the spat diction. This needs to stay for now; check commit 3be928c0659144ea87ddd023fe18c426b5570d40 comment
   parent.server.sync;
 
   // run the startup function after reverb since it starts the reverb synth
@@ -55,12 +56,12 @@ fork {
 
   // make the sections
   parent.sections = (); // an empty dictionary
-  5.do{|i|
+  parent.numSecs.do{|i|
     var sectionName, episodeFiles, thisSection;
     "Making Section %...\n".postf(i+1); // tell us what section we're on during boot
     sectionName = "section%".format(i+1).asSymbol; // get the name
     episodeFiles = (parent.thisDir++"/sound/%/*.wav".format(sectionName)).pathMatch; // get the directory
-    thisSection = parent.makeSection(episodeFiles, 0.1, i+1, i+2); // default arguments. Make sure start and end make sense!
+    thisSection = parent.makeSection(episodeFiles, 0.1, i+1, i+2, i, parent.numSecs); // default arguments. Make sure start and end make sense!
     parent.server.sync; // wait for stuff to finish
     parent.sections.put(sectionName, thisSection); // remember this section
   };

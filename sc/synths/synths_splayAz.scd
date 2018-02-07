@@ -72,30 +72,27 @@
   */
   ////////////////////////////////
 
-  SynthDef(\playFile_4ch, {|outBus = 0, buff, envBuff, envBuffSize, pos, start = 0, end = 1, pause = 0|
+  SynthDef(\playFile_4ch, {|outBus = 0, buff, envBuff, envBuffSize, pos, start = 0, end = 1|
     var sig, env;
     sig = VDiskIn.ar(4, buff, BufRateScale.kr(buff), loop: 1);
     pos = pos.linlin(start, end, 0, envBuffSize).clip(0,envBuffSize); // convert stuff; clip it before passing
     env = IndexL.kr(envBuff, pos.lag2(10)); // get our current amplitude and smooth it a bit
-    PauseSelf.kr(pause);
     sig = sig*env; // multiply
     Out.ar(outBus, sig);
   }).send(parent.server);
 
   // simple processing: noise volume, distortion, delay(?), etc. No reverb.
-  SynthDef(\fxSynth_4ch, {|inBus, outBus, noiseLev, dryWetMix = 0.5, pause = 0|
+  SynthDef(\fxSynth_4ch, {|inBus, outBus, noiseLev, dryWetMix = 0.5|
     var sig;
     sig = In.ar(inBus, 4); // signal in
     // sig = NoiseVol.ar(sig, noiseLev); // noise volume before reverb
     // sig = Distortion.ar(sig, dist);
 
-    PauseSelf.kr(pause);
     Out.ar(outBus, sig); // send it out
   }).send(parent.server);
 
-  SynthDef(\VBAP_4ch, {|outBus, inBus, vbapBuff, aziSpeed = 0.01, eleSpeed = 0.01, spread = 50, pause = 1|
+  SynthDef(\spat_4ch, {|outBus, inBus|
     var sig, lev;
-    PauseSelf.kr(pause);
     sig = In.ar(inBus, 4); // signal in
     sig = SplayAz.ar(8, sig, spread: 1, level: 1, width: LFNoise1.kr(0.01).range(2,3), center: 1, orientation: 0.5);
     sig = sig.collect{|chan| Pan2.ar(chan, LFNoise1.kr(0.01).range(-1, 0.5))}; // collect them into pairs
