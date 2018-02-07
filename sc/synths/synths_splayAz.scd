@@ -24,7 +24,7 @@
     Out.kr(outBus, val);
   }).send(parent.server);
 
-  SynthDef(\reverb, {|inBus, outBus, impulseBuffs = #[0,0], initDel = 0.02, dry = 0.5, wet = 0.5, leak = 0.01, hp = 250|
+  SynthDef(\reverb, {|inBus, outBus, impulseBuffs = #[0,0], initDel = 0.02, mix = -1, leak = 0.01, hp = 250|
     var sig, rev, leakSig;
     sig = In.ar(inBus, 16); // 16 channels
     rev = DelayN.ar(sig, (initDel+Rand(0.0,0.01) ! 16), initDel+0.01); // initial delay
@@ -51,16 +51,18 @@
     // subRev = PartConv.ar(rev.sum*0.0625, 4098, impulseBuffs[1], 0.707); // subwoofer reverb
 
     rev = HPF.ar(rev, hp); // highpass
-    rev = CompanderD.ar(rev, 0.707, 1, 0.333); // compress it just to be safe
-    Out.ar(outBus, (rev*wet)+(sig*dry)); // send it out
-    // OutBus.ar(subBus, subRev*wet); // subwoofer reverb out
+    rev = CompanderD.ar(rev, 0.707, 1, 0.666); // compress it just to be safe
+    sig = XFade2.ar(sig, rev*0.17782, mix.lag2(5)); // mix wet and dry
+    Out.ar(outBus, sig); // send it out
+    // Out.ar(outBus, (rev*wet*0.17782)+(sig*dry)); // send it out
   }).send(parent.server);
 
-  SynthDef(\mainPipe, {|inBus, outBus, subBus, amp = 0.2|
-    var sig, subSig;
+  SynthDef(\mainPipe, {|inBus, outBus, amp = 0.2|
+    var sig, lev;
     sig = In.ar(inBus, 16); // 16 channels in
+    // lev = MouseX.kr(0,1);
+    // sig = sig.collect{|chan| NoiseVol.ar(chan, lev)};
     sig = BAllPass.ar(sig, (Rand(1000, 10000) ! 16), 0.8); // change the phases of each speaker
-    subSig = LPF.ar(Mix(sig)*0.0625*amp, 50); // lowpass the subwoofer signal
     Out.ar(outBus, HPF.ar(sig*amp, 50)); // hipass and send it out
   }).send(parent.server);
 
@@ -92,10 +94,10 @@
   }).send(parent.server);
 
   SynthDef(\VBAP_4ch, {|outBus, inBus, vbapBuff, aziSpeed = 0.01, eleSpeed = 0.01, spread = 50, pause = 1|
-    var sig, azi, ele;
+    var sig, lev;
     PauseSelf.kr(pause);
     sig = In.ar(inBus, 4); // signal in
-    sig = SplayAz.ar(8, sig, spread: 1, level: 1, width: 2, center: 1, orientation: 0.5);
+    sig = SplayAz.ar(8, sig, spread: 1, level: 1, width: LFNoise1.kr(0.01).range(2,3), center: 1, orientation: 0.5);
     sig = sig.collect{|chan| Pan2.ar(chan, LFNoise1.kr(0.01).range(-1, 0.5))}; // collect them into pairs
     sig = [
       // lower ring
