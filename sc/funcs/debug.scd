@@ -4,7 +4,7 @@
     Debugging function. Defaults to off (0) and an interval of 15s.
   */
 
-  var hist, busses, sections, debugFunc;
+  var hist, busses, sections, debugFunc, cond;
   hist = parent.hist;
   busses = parent.busses;
   sections = parent.sections;
@@ -33,50 +33,65 @@
       {1} {
         debugFunc = {
           "Debugging...\n\n".post; // two newlines
-          "Avg. CPU: %\n".postf(parent.server.avgCPU);
-          "Peak CPU: %\n".postf(parent.server.peakCPU);
+          "Avg. CPU: %\n".postf(parent.server.avgCPU.round(0.1);
+          "Peak CPU: %\n".postf(parent.server.peakCPU.round(0.1);
           "---------------------------------\n\n".post;
         };
       }
       {2} {
         debugFunc = {
+          cond = false; // set it to false
           "Debugging...\n\n".post; // two newlines
-          "Avg. CPU: %\n".postf(parent.server.avgCPU);
-          "Peak CPU: %\n\n".postf(parent.server.peakCPU);
+          "Avg. CPU: %\n".postf(parent.server.avgCPU.round(0.1);
+          "Peak CPU: %\n\n".postf(parent.server.peakCPU.round(0.1);
 
           "Parent Bus Positions:\n".post;
           parent.busses.volume.get({|val|
             "\tOverall Amplitude: %\n".postf(val.ampdb); // say what the amplitude is right now
+            cond = true;
           });
+          while{cond.not} {0.05.wait}; // wait until we've got the value before moving to preserve formatting
+          cond = false;
           parent.busses.sectionFader.get({|val|
             "\tSection Fader: %\n".postf(val); // where are we in the sections
+            cond = true;
           });
+          while{cond.not} {0.05.wait}; // wait until we've got the value before moving to preserve formatting
           "---------------------------------\n\n".post;
         };
       }
       { // default function: level>2
         debugFunc = {
+          cond = false; // set it to false
           "Debugging...\n\n".post; // two newlines
-          "Avg. CPU: %\n".postf(parent.server.avgCPU);
-          "Peak CPU: %\n\n".postf(parent.server.peakCPU);
+          "Avg. CPU: %\n".postf(parent.server.avgCPU.round(0.1);
+          "Peak CPU: %\n\n".postf(parent.server.peakCPU.round(0.1);
 
           "Parent Bus Positions:\n".post;
           parent.busses.volume.get({|val|
             "\tOverall Amplitude: %\n".postf(val.ampdb); // say what the amplitude is right now
+            cond = true;
           });
+          while{cond.not} {0.05.wait}; // wait until we've got the value before moving to preserve formatting
+          cond = false;
           parent.busses.sectionFader.get({|val|
             "\tSection Fader: %\n".postf(val); // where are we in the sections
+            cond = true;
           });
+          while{cond.not} {0.05.wait}; // wait until we've got the value before moving to preserve formatting
 
           "Section Info:\n".post;
           // register the nodes to NodeWatcher to check their current status? Could be valuable but will be
           // additional overhead...
           sections.keysValuesDo{|sectionName, dict|
+            cond = false; // set it to false
             "%:\n".format(sectionName).toUpper.post; // post the section name
             "\tNumber of episodes: %\n".postf(dict.episodes.size); // number of episodes
             dict.busses.episodeFader.get({|val|
-              "\tBus Position: %\n".postf(val)
+              "\tBus Position: %\n".postf(val);
+              cond = true;
             });
+            while{cond.not} {0.05.wait}; // wait until we've got the value before moving to preserve formatting
           };
           "---------------------------------\n\n".post;
         };
