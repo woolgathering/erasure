@@ -68,7 +68,7 @@
   // reverb synth
   parent.synths.reverb = Synth(\reverb,
     [
-    inBus: parent.busses.rev, outBus: parent.busses.mainOut, initDel: 0.02, dry: 0.8, wet: 0.2, leak: 0.005, hp: 150,
+    inBus: parent.busses.rev, outBus: parent.busses.mainOut, initDel: 0.02, mix: -0.7, leak: 0.005, hp: 50,
     impulseBuffs: [parent.revBuffs.left, parent.revBuffs.right]
     ],
     target: parent.groups.revAndOut, addAction: \addToHead
@@ -76,7 +76,7 @@
 
   // make the main pipe for the output: THIS GOES TO THE MAINS!!!
   parent.synths.mainPipe = Synth(\mainPipe,
-    [inBus: parent.busses.mainOut, outBus: 0, amp: -3.dbamp],
+    [inBus: parent.busses.mainOut, outBus: 0, amp: parent.busses.volume.asMap],
     target: parent.groups.revAndOut, addAction: \addToTail
   );
 
