@@ -13,7 +13,7 @@
   errorMsg = "ERROR!!\n\n"; // a string to start
   // checks here...
 
-  if(parent.server.isRunning.not) {
+  if(parent.server.unresponsive) {
     good = false; // it's not good.
     errorMsg = errorMsg ++ "\tServer is no longer running! ::: %\n\n".format(Date.getDate.stamp);
   };
