@@ -12,7 +12,7 @@
   vis = (); // an empty dictionary for the visuals
   vis.put(\interval, 10); // the default interpolation interval in seconds (see the forked visual routine in updateVisitors() at the bottom)
   oscFuncs = (); // an emtpy dictionary
-  server = NetAddr("132.239.93.235", 8338); // IP address and port of visual processing server
+  server = NetAddr("172.27.2.5", 8338); // IP address and port of visual processing server
 
   // this might not be necessary. Only if we want a special trajectory.
   visArrays = (
