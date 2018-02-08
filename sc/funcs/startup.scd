@@ -37,7 +37,7 @@
   parent.timer.putDate(\pauseGroups,
     {|date| #[0,30].includes(date.second)}, // every 30 seconds
     {
-      "Pausing nodes...".postln;
+      if(parent.debugLevel>0) {"Pausing nodes...".postln};
       // given a sectionFader position, pause the groups appropriately:
       parent.busses.sectionFader.get({|val|
         case

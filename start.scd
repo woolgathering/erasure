@@ -3,7 +3,7 @@
 ~parent.server = Server.default;
 ~parent.thisDir = "~/Desktop/erasure/erasure".standardizePath;
 ~parent.numSecs = 5;
-~parent.debugLevel = 2;
+~parent.debugLevel = 0;
 ~parent.demoMode = true;
 
 File.include(~parent.thisDir ++ "/sc/serverSettings.scd", ~parent);
