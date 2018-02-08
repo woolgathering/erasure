@@ -1,16 +1,16 @@
 {|parent|
 var hist = ();
 
-hist.tmpArray = Array.fill(288, 0); // a temporary array (this will be made anew every day)
+hist.tmpArray = Array.fill(288, rrand(1,15)); // a temporary array (this will be made anew every day)
 
 // arrays to hold the number of visitors every 5 minutes as set by updateVisitors()
-hist.sun = Array.rand(288, 0, 20); // random values to start
-hist.mon = Array.rand(288, 0, 20); // random values to start
-hist.tue = Array.rand(288, 0, 20); // random values to start
-hist.wed = Array.rand(288, 0, 20); // random values to start
-hist.thu = Array.rand(288, 0, 20); // random values to start
-hist.fri = Array.rand(288, 0, 20); // random values to start
-hist.sat = Array.rand(288, 0, 20); // random values to start
+hist.sun = Array.rand(288, 0, 17); // random values to start
+hist.mon = Array.rand(288, 0, 17); // random values to start
+hist.tue = Array.rand(288, 0, 17); // random values to start
+hist.wed = Array.rand(288, 0, 17); // random values to start
+hist.thu = Array.rand(288, 0, 17); // random values to start
+hist.fri = Array.rand(288, 0, 17); // random values to start
+hist.sat = Array.rand(288, 0, 17); // random values to start
 
 hist.dayCount = (); // another dictionary to count the days elapsted
 hist.dayCount.sun = 1;

@@ -23,7 +23,7 @@
   hist.tmpArray[thisIdx] = numVistors; // set the current number of visitors into the tmpArray
 
   // get the number of visitors in the last poll if it's not midnight
-  prevVisitors = if(thisIdx != 0) {hist.tmpArray[thisIdx-1]} {0}; // set it to 0 if it's midnight
+  prevVisitors = if(thisIdx != 0) {hist.tmpArray[thisIdx-1]} {1}; // set it to 0 if it's midnight
 
   /*
     Math magic here to figure out where the sound+video should be given the history and present
@@ -39,10 +39,29 @@
   // get the largest number of visitors ever
   maxVisitors = (hist.sun++hist.mon++hist.tue++hist.wed++hist.thu++hist.fri++hist.sat).maxItem;
   visitorRatio = (numVistors/maxVisitors)*0.4; // make a ratio and multiply it by the weight
-  histRatio = hist.at(now.format("%a").toLower.asSymbol)[(now.hour*6)+(now.minute*0.1)]; // what's our usual visitiation right now?
+  histRatio = hist.at(now.format("%a").toLower.asSymbol)[thisIdx].max(1); // what's our usual visitiation right now?
   histRatio = numVistors/histRatio; // get the ratio of our visitation
 
-  // faderVal = (visitorRatio + histRatio + recentHistRatio)*5; // weights add to one
+
+  recentHistRatio = numVistors/prevVisitors;
+
+  faderVal = [visitorRatio, histRatio, recentHistRatio].normalizeSum; // make sure they add to one
+
+  faderVal = (faderVal[0]+faderVal[1]+faderVal[2])*5; // weights add to one
+
+
+  "
+  thisIdx: %\n
+  numVistors: %\n
+  maxVisitors: %\n
+  visitorRatio: %\n
+  histRatio: %\n
+  recentHistRatio: %\n
+  faderVal: %\n
+  ---------------------\n\n
+  ".postf(thisIdx, numVistors, maxVisitors.round(0.01), visitorRatio.round(0.01), histRatio.round(0.01), recentHistRatio.round(0.01), faderVal.round(0.01));
+
+
 
   // FOR TESTING
   faderVal = rrand(0.0,4.0); // random value between 1 and 5
@@ -61,7 +80,7 @@
         // also set the localized distorion, noiseVol, reverb, etc.
 
         // and master volume!!!
-        parent.busses.volume.set(0.707);
+        parent.busses.volume.set(-12.dbamp);
 
         counter = counter + 1;
         10.wait; // wait 10 seconds.
@@ -73,7 +92,7 @@
   //    VISUALS
   ////////////////////////////////////
   fork {
-    var counter = 1, inc; // count the iterations. At 10 seconds, 10 minutes is 60.
+    var counter = 1, inc; // count the iterations. At 10 seconds, 5 minutes is 30.
     inc = faderVal/30; // find the increment
     while({counter<=31},
       {
@@ -83,7 +102,12 @@
         // send some OSC message to the visuals machine
 
         // distort = {SOMETHING with faderVal}.value; // or whatever
-        // visServer.sendMsg("/erasure/distort", distort, 10); // for instance where distort is the value and 10 is the lag time that's sent to the visual machine
+        // visServer.sendMsg("/erasure/distort", distort, 10); // for instance where distort is the value and 10 is the lag time that's sent to the visual
+
+        // send the values to the visual machine
+        // vis.server.sendMsg("/erasure/distort", distort, vis.interval);
+        // vis.server.sendMsg("/erasure/sliced", slice, vis.interval);
+        // vis.server.sendMsg("/erasure/localization", localization, vis.interval);
 
         counter = counter + 1;
         10.wait; // wait 10 seconds.
