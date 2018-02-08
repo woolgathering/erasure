@@ -11,7 +11,8 @@
 
   Platform.case(
     \osx, {
-      server.options.device = ServerOptions.devices[4]; // use the RME fireface
+      // Server.supernova; // DiskIn doesn't work with supernova?? Also, nodes come in out of order even if order is explicitly given
+      server.options.device = ServerOptions.devices[2]; // use the RME fireface
     },
     \linux, {
       // Server.supernova; // use supernova (Linux only)

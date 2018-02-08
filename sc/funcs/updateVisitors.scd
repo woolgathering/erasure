@@ -77,7 +77,7 @@
         // maybe add some noise to someVALUE? i.e. +/- 5%?
         parent.busses.sectionFader.set((inc*counter)+1); // set the value every 10 seconds.
 
-        // also set the localized distorion, noiseVol, reverb, etc.
+        // also set the localized distorion, noiseVol, reverb, rotational speed, etc.
 
         // and master volume!!!
         parent.busses.volume.set(-12.dbamp);
