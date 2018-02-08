@@ -27,7 +27,7 @@
   SynthDef(\reverb, {|inBus, outBus, impulseBuffs = #[0,0], initDel = 0.02, mix = -1, leak = 0.01, hp = 250|
     var sig, rev, leakSig;
     sig = In.ar(inBus, 16); // 16 channels
-    rev = DelayN.ar(sig, (initDel+Rand(0.0,0.01) ! 16), initDel+0.01); // initial delay
+    rev = DelayN.ar(sig, (initDel+Rand(0.0,0.001) ! 16), initDel+0.001); // initial delay
     leakSig = Mix(rev)*leak; // a little bit of everything for each channel, regardless of position
     // individual reverbs on each channel
     rev = [
@@ -91,10 +91,10 @@
     Out.ar(outBus, sig); // send it out
   }).send(parent.server);
 
-  SynthDef(\spat_4ch, {|outBus, inBus|
+  SynthDef(\spat_4ch, {|outBus, inBus, rotSpd = 0.1|
     var sig, lev;
     sig = In.ar(inBus, 4); // signal in
-    sig = SplayAz.ar(8, sig, spread: 1, level: 1, width: LFNoise1.kr(0.01).range(2,3), center: 1, orientation: 0.5);
+    sig = SplayAz.ar(8, sig, spread: 1, level: 1, width: LFNoise1.kr(0.01).range(2,3), center: 1, orientation: LFNoise1.kr(rotSpd).range(0,7));
     sig = sig.collect{|chan| Pan2.ar(chan, LFNoise1.kr(0.01).range(-1, 0.5))}; // collect them into pairs
     sig = [
       // lower ring
