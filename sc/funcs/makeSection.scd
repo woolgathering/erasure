@@ -52,11 +52,11 @@
       fxBus = Bus.audio(server, numChannels); // a bus for this particular episode's processing
       spatBus = Bus.audio(server, numChannels); // a bus for spatailization
       server.sync; // wait
-      parent.freeables.addAll([buffer,fxBus]); // add this stuff to freeables
+      parent.freeables.addAll([buffer,fxBus, spatBus]); // add this stuff to freeables
       switch (i) // choose the correct envelope
-        {0} {envelope = parent.envs.firstHalfSine} // when it's the first episode
-        {episodeFiles.size-1} {envelope = parent.envs.secondHalfSine} // when it's the last episode
-        {envelope = parent.envs.sine}; // default
+        {0} {envelope = parent.envs.firstHalfTable} // when it's the first episode
+        {episodeFiles.size-1} {envelope = parent.envs.lastHalfTable} // when it's the last episode
+        {envelope = parent.envs.table}; // default
       1.wait; // just to be sure
 
       // set the player
@@ -81,7 +81,7 @@
 
       // spatialize and send it out, braj. Initial speed is between 30 and 45 seconds of movement, spread varies depending on numChannels: the more channels there are, the lower the spread.
       spat = Synth("spat_%ch".format(numChannels).asSymbol,
-        [inBus: spatBus, outBus: busses.pipeBus],
+        [inBus: spatBus, outBus: busses.pipeBus, rotSpd: 180.reciprocal],
         target: groups.spat, addAction: \addToHead
       );
 
