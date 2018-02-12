@@ -72,9 +72,14 @@
   */
   ////////////////////////////////
 
-  SynthDef(\playFile_4ch, {|outBus = 0, buff, envBuff, envBuffSize, pos, start = 0, end = 1|
-    var sig, env;
+  SynthDef(\playFile_4ch, {|outBus = 0, buff, envBuff, envBuffSize, pos, start = 0, end = 1, dur = 100|
+    var sig, env, diskEnv;
     sig = VDiskIn.ar(4, buff, BufRateScale.kr(buff), loop: 1);
+    diskEnv = EnvGen.kr(
+      Env.circle([0,1,1,0], [0.05,0.9,0.05], \sine),
+      timeScale: dur
+    );
+    sig = sig*diskEnv;
     pos = pos.linlin(start, end, 0, envBuffSize).clip(0,envBuffSize); // convert stuff; clip it before passing
     env = IndexL.kr(envBuff, pos.lag2(10)); // get our current amplitude and smooth it a bit
     sig = sig*env; // multiply
@@ -94,6 +99,51 @@
   SynthDef(\spat_4ch, {|outBus, inBus, rotSpd = 0.1|
     var sig, lev;
     sig = In.ar(inBus, 4); // signal in
+    sig = SplayAz.ar(8, sig, spread: 1, level: 1, width: LFNoise1.kr(0.01).range(2,3), center: 1, orientation: LFNoise1.kr(rotSpd).range(0,7));
+    sig = sig.collect{|chan| Pan2.ar(chan, LFNoise1.kr(0.01).range(-1, 0.5))}; // collect them into pairs
+    sig = [
+      // lower ring
+      sig[0][0],sig[1][0],sig[2][0],sig[3][0],sig[4][0],sig[5][0],sig[6][0],sig[7][0],
+      // upper ring
+      sig[0][1],sig[1][1],sig[2][1],sig[3][1],sig[4][1],sig[5][1],sig[6][1],sig[7][1]
+    ];
+    // sig = NoiseVol.ar(sig, lev); // put noise volume here to be on each speaker??? Could be more interesting
+    Out.ar(outBus, sig);
+  }).send(parent.server);
+
+  ////////////////////////////////
+  /*
+    8-channel synths
+  */
+  ////////////////////////////////
+
+  SynthDef(\playFile_8ch, {|outBus = 0, buff, envBuff, envBuffSize, pos, start = 0, end = 1, dur = 100|
+    var sig, env, diskEnv;
+    sig = VDiskIn.ar(8, buff, BufRateScale.kr(buff), loop: 1);
+    diskEnv = EnvGen.kr(
+      Env.circle([0,1,1,0], [0.05,0.9,0.05], \sine),
+      timeScale: dur
+    );
+    sig = sig*diskEnv;
+    pos = pos.linlin(start, end, 0, envBuffSize).clip(0,envBuffSize); // convert stuff; clip it before passing
+    env = IndexL.kr(envBuff, pos.lag2(10)); // get our current amplitude and smooth it a bit
+    sig = sig*env; // multiply
+    Out.ar(outBus, sig);
+  }).send(parent.server);
+
+  // simple processing: noise volume, distortion, delay(?), etc. No reverb.
+  SynthDef(\fxSynth_8ch, {|inBus, outBus, noiseLev, dryWetMix = 0.5|
+    var sig;
+    sig = In.ar(inBus, 8); // signal in
+    // sig = NoiseVol.ar(sig, noiseLev); // noise volume before reverb
+    // sig = Distortion.ar(sig, dist);
+
+    Out.ar(outBus, sig); // send it out
+  }).send(parent.server);
+
+  SynthDef(\spat_8ch, {|outBus, inBus, rotSpd = 0.1|
+    var sig, lev;
+    sig = In.ar(inBus, 8); // signal in
     sig = SplayAz.ar(8, sig, spread: 1, level: 1, width: LFNoise1.kr(0.01).range(2,3), center: 1, orientation: LFNoise1.kr(rotSpd).range(0,7));
     sig = sig.collect{|chan| Pan2.ar(chan, LFNoise1.kr(0.01).range(-1, 0.5))}; // collect them into pairs
     sig = [
