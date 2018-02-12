@@ -17,7 +17,7 @@
   // this might not be necessary. Only if we want a special trajectory.
   visArrays = (
     distort: Object.readArchive(parent.thisDir++"/sc/arrays/distort"),
-    slice: Object.readArchive(parent.thisDir++"/sc/arrays/slice"),
+    sliced: Object.readArchive(parent.thisDir++"/sc/arrays/sliced"),
     localization: Object.readArchive(parent.thisDir++"/sc/arrays/localization")
   );
   vis.put(\visArrays, visArrays); // add it to the master visual dictionary
