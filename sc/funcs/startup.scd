@@ -65,6 +65,14 @@
   parent.freeables.addAll(parent.envs); // add all these to the freeables
   parent.server.sync;
 
+///////
+// Load arrays for volume and rotation
+////////
+parent.arrays = (
+  rotation: Object.readArchive(parent.thisDir++"/sc/arrays/rotation"),
+  volume: Object.readArchive(parent.thisDir++"/sc/arrays/volume"),
+);
+
   ////////////////////////////
   // Start synths through which everything is routed
   ////////////////////////////
