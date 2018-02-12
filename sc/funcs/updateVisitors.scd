@@ -62,27 +62,35 @@
   ".postf(thisIdx, numVistors, maxVisitors.round(0.01), visitorRatio.round(0.01), histRatio.round(0.01), recentHistRatio.round(0.01), faderVal.round(0.01));
 
 
-
+  parent.oldFaderVal = 1; // remember the old value
   // FOR TESTING
-  faderVal = rrand(0.0,4.0); // random value between 1 and 5
+  faderVal = parent.faderStream.next * 0.5; // brownian motion. Divide by two so that we move in increments of 0.5. See line 12 in demoMode.scd
 
   ////////////////////////////////////
   //    SOUND
   ////////////////////////////////////
   fork {
     var counter = 1, inc; // count the iterations. At 10 seconds, 5 minutes is 30.
-    inc = faderVal/30; // find the increment
+    inc = (faderVal-parent.oldFaderVal)/30; // find the increment
     while({counter<=31},
       {
+        var vol, rot, val;
+        val = (inc*counter)+parent.oldFaderVal;
         // maybe add some noise to someVALUE? i.e. +/- 5%?
-        parent.busses.sectionFader.set((inc*counter)+1); // set the value every 10 seconds.
+        parent.busses.sectionFader.set(val); // set the value every 10 seconds. Lagging happens in the Ugens
 
         // also set the localized distorion, noiseVol, reverb, rotational speed, etc.
 
+
         // and master volume!!!
-        parent.busses.volume.set(-12.dbamp);
+        vol = parent.arrays.volume.blendAt(val.linlin(1,5,0,2047)); // index
+        parent.busses.volume.set(vol.dbamp); // convert dB to linear amplitude and set it
+
+        rot = parent.arrays.volume.blendAt(val.linlin(1,5,0,2047)); // index
+        parent.groups.sections.set(\rotSpd, val.reciprocal); // reciporcal and set it
 
         counter = counter + 1;
+        if(counter==30) {parent.oldFaderVal = faderVal};
         10.wait; // wait 10 seconds.
       };
     );
@@ -93,21 +101,30 @@
   ////////////////////////////////////
   fork {
     var counter = 1, inc; // count the iterations. At 10 seconds, 5 minutes is 30.
-    inc = faderVal/30; // find the increment
+    inc = (faderVal-parent.oldFaderVal)/30; // find the increment
     while({counter<=31},
       {
-        var visServer, distort, slice, localization;
-        // visServer = parent.vis.server;
+        var visServer, distort, sliced, localization, val;
+        val = (inc*counter)+parent.oldFaderVal;
+        visServer = parent.vis.server;
         // maybe add some noise to someVALUE? i.e. +/- 5%?
         // send some OSC message to the visuals machine
 
         // distort = {SOMETHING with faderVal}.value; // or whatever
         // visServer.sendMsg("/erasure/distort", distort, 10); // for instance where distort is the value and 10 is the lag time that's sent to the visual
 
+        // index into the arrays
+        distort = vis.visArrays.distort.blendAt((val*rrand(0.98,1.02)).linlin(1,5,0,2047));
+        sliced = vis.visArrays.sliced.blendAt((val*rrand(0.98,1.02)).linlin(1,5,0,2047));
+        localization = vis.visArrays.localization.blendAt((val*rrand(0.98,1.02)).linlin(1,5,0,2047));
+
+        // print debugging information. To be moved to debug.scd
+        if(parent.debugLevel>0) {"distort: %\nsliced: %\nlocal: %\n\n".postf(distort, sliced, localization)};
+
         // send the values to the visual machine
-        // vis.server.sendMsg("/erasure/distort", distort, vis.interval);
-        // vis.server.sendMsg("/erasure/sliced", slice, vis.interval);
-        // vis.server.sendMsg("/erasure/localization", localization, vis.interval);
+        vis.server.sendMsg("/erasure/distort", distort, 45); // lag really long to act as a lp filter
+        vis.server.sendMsg("/erasure/sliced", sliced, 45);
+        vis.server.sendMsg("/erasure/localization", localization, 45);
 
         counter = counter + 1;
         10.wait; // wait 10 seconds.

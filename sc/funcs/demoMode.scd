@@ -7,7 +7,9 @@
 ////////////////////////////////////
 
 {|parent|
-  var stream;
+  var stream, fader;
   stream = Pbrown(0,20,2,inf).asStream; // between 0 and 20 people, maximum 2 enter at a time for infinity
+  fader = Pbrown(2,10,4,inf).asStream; // fader as a stream. MUST divide by two; done this way so that it moves in increments of 0.5.
+  parent.faderStream = fader;
   stream; // return the stream
 }

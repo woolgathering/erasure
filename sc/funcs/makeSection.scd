@@ -41,11 +41,12 @@
     // make the synths, buffers, etc and stick them in a dictionary
     // note that each synth is particular to a number of channels and that the symbol is created on the fly
     episodeFiles.collect{|path, i|
-      var player, fx, spat, buffer, sf, numChannels, fxBus, spatBus, thisEpisode, episodeName, envelope;
+      var player, fx, spat, buffer, sf, numChannels, fxBus, spatBus, thisEpisode, episodeName, envelope, dur;
       episodeName = "episode%".format(i+1).asSymbol; // get a symbolic name
       sf = SoundFile.openRead(path); // open as a soundfile
       if(sf.isNil) {"% failed to open!!".format(path).error}; // tell us if it failed
       numChannels = sf.numChannels; // read into number of channels
+      dur = sf.duration; // get the duration
       sf.close; // close the soundfile since we have what we need
       buffer = Buffer.cueSoundFile(server, path, numChannels: numChannels, bufferSize: 262144); // read the file and prepare for reading from disk
       server.sync; // wait
@@ -64,7 +65,7 @@
         [
           outBus: fxBus, buff: buffer, envBuff: envelope,
           envBuffSize: envelope.numFrames, pos: busses.episodeFader.asMap,
-          start: divisions[i][0], end: divisions[i][1]
+          start: divisions[i][0], end: divisions[i][1], dur: dur
         ], // default to paused
         target: groups.players, addAction: \addToTail
       );
@@ -95,16 +96,11 @@
   // wait for the above to finish
   // while{cond.not} {0.05.wait};
 
-  switch (secIdx) // choose the correct envelope
-    {0} {secEnvelope = parent.envs.firstHalfTable} // when it's the first episode
-    {parent.numSecs-1} {secEnvelope = parent.envs.lastHalfTable} // when it's the last episode
-    {secEnvelope = parent.envs.table}; // default
-
   // a synth that pipes everything to the main reverb (to control overall fades between sections)
   pipe = Synth(\sectionPipe,
     [
       inBus: busses.pipeBus, outBus: parent.busses.rev, fader: parent.busses.sectionFader.asMap,
-      envBuff: secEnvelope, envBuffSize: secEnvelope.numFrames, start: start-overlap, end: end+overlap
+      envBuff: parent.envs.table, envBuffSize: parent.envs.table.numFrames, start: start-overlap, end: end+overlap
     ],
     target: groups.master, addAction: \addToTail
   );
