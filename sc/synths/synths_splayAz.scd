@@ -5,7 +5,7 @@
     sig = In.ar(inBus, 16); // 16 channels in
     fader = fader.lag2(10); // 10 second lag (see Routine in updateVisitors)
     fader = fader.linlin(start, end, 0, envBuffSize).clip(0,envBuffSize); // convert shit; clip it before passing
-    env = IndexL.kr(envBuff, fader).lag2(5); // get our current amplitude and smooth it a bit
+    env = IndexL.kr(envBuff, fader).lag2(20); // get our current amplitude and smooth it a bit
     Out.ar(outBus, sig*env);
     PauseSelf.kr(pause);
   }).send(parent.server);

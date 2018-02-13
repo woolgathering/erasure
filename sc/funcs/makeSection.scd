@@ -24,7 +24,7 @@
   groups.spat = Group.tail(groups.master); // a group for the spatailization of each (eats lots of CPU??)
 
   // even divisions. May be more interesting to specify them to be uneven.
-  divisions = parent.delineateSections(episodeFiles.size, overlap);
+  divisions = parent.delineateSections(episodeFiles.size, overlap*2);
 
   // add the previous things to freeables
   parent.freeables.addAll(busses);
