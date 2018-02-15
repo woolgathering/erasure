@@ -2,6 +2,9 @@
 test.scd
 *.aif
 *.aiff
+*.zip
+._*
+.DS_Store
 
 # don't save things in /bench for now
 /bench/*
