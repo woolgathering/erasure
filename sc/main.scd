@@ -56,7 +56,7 @@ fork {
 
   // make the sections
   parent.sections = (); // an empty dictionary
-  parent.numSecs.do{|i|
+  5.do{|i|
     var sectionName, episodeFiles, thisSection;
     "Making Section %...\n".postf(i+1); // tell us what section we're on during boot
     sectionName = "section%".format(i+1).asSymbol; // get the name
