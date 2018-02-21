@@ -2,8 +2,8 @@
 ~parent = ();
 ~parent.server = Server.default;
 ~parent.thisDir = "~/Desktop/erasure/erasure".standardizePath;
-~parent.numSecs = 5;
-~parent.debugLevel = 0;
+~parent.startSection = 2;
+~parent.debugLevel = 3;
 ~parent.demoMode = true;
 
 File.include(~parent.thisDir ++ "/sc/serverSettings.scd", ~parent);
@@ -19,6 +19,8 @@ File.include(~parent.thisDir ++ "/sc/serverSettings.scd", ~parent);
 ~parent.server.plotTree;
 ~parent.server.meter
 ~parent.sections.section1.busses.fxBus.scope
+
+
 ~parent.server.makeGui
 
 ~parent.spat
