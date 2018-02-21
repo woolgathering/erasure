@@ -3,6 +3,7 @@ var parent;
 // parent = (); // an empty dict
 parent = ~parent; // capture it in the global environment so we can interact with it later
 parent.freeables = List.new(0); // an emtpy list for things that can be freed
+parent.initRun = true; // to correctly set the starting section
 parent.hist = File.include(parent.thisDir++"/sc/dicts/hist.scd", parent); // compile and evaluate the hist dictionary
 parent.vis = File.include(parent.thisDir++"/sc/dicts/vis.scd", parent); // compile and evaluate the visual dictionary
 parent.timer = DayTimer(\erasure); // a DayTimer for the installation

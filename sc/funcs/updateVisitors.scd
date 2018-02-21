@@ -61,7 +61,11 @@
   // ---------------------\n\n
   // ".postf(thisIdx, numVistors, maxVisitors.round(0.01), visitorRatio.round(0.01), histRatio.round(0.01), recentHistRatio.round(0.01), faderVal.round(0.01));
 
-  parent.startSection = parent.oldFaderVal; // remember the old value
+  if(parent.initRun) {
+    parent.oldFaderVal = parent.startSection; // set our starting section IF it's the first time
+    parent.initRun = false; // don't do this again
+  };
+
   // FOR TESTING
   faderVal = (parent.faderStream.next * 0.5).clip(1,5); // brownian motion. Divide by two so that we move in increments of 0.5. See line 12 in demoMode.scd
 
@@ -76,17 +80,17 @@
         var vol, rot, val;
         val = (inc*counter)+parent.oldFaderVal;
         // maybe add some noise to someVALUE? i.e. +/- 5%?
-        parent.busses.sectionFader.set(val); // set the value every 10 seconds. Lagging happens in the Ugens
+        parent.busses.sectionFader.set(val * rrand(0.98,1.02)); // set the value every 10 seconds. Lagging happens in the Ugens
 
         // also set the localized distorion, noiseVol, reverb, rotational speed, etc.
 
 
         // and master volume!!!
-        vol = parent.arrays.volume.blendAt(val.linlin(1,5,0,2047)); // index
+        vol = parent.arrays.volume.blendAt(val.linlin(1,5,0,2047) * rrand(0.98,1.02)); // index
         parent.busses.volume.set(vol.dbamp); // convert dB to linear amplitude and set it
 
-        rot = parent.arrays.volume.blendAt(val.linlin(1,5,0,2047)); // index
-        parent.groups.sections.set(\rotSpd, val.reciprocal); // reciporcal and set it
+        rot = parent.arrays.volume.blendAt(val.linlin(1,5,0,2047) * rrand(0.98,1.02)); // index
+        parent.groups.sections.set(\rotSpd, rot.reciprocal); // reciporcal and set it
 
         counter = counter + 1;
         if(counter==30) {parent.oldFaderVal = faderVal};
