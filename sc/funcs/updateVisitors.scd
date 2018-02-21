@@ -122,7 +122,7 @@
         localization = vis.visArrays.localization.blendAt((val*rrand(0.98,1.02)).linlin(1,5,0,2047));
 
         // print debugging information. To be moved to debug.scd
-        if(parent.debugLevel>0) {"distort: %\nsliced: %\nlocal: %\n\n".postf(distort, sliced, localization)};
+        if(parent.debugLevel>2) {"distort: %\nsliced: %\nlocal: %\n\n".postf(distort, sliced, localization)};
 
         // send the values to the visual machine
         vis.server.sendMsg("/erasure/distort", distort, 45); // lag really long to act as a lp filter

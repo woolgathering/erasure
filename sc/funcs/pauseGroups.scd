@@ -8,38 +8,38 @@
 
   if(array[0]==0)
     {parent.sections.section1.run(false);
-      if(debug>0) {"Section1 paused!".postln};
+      if(debug>1) {"Section1 paused!".postln};
     }
     {parent.sections.section1.run(true);
-      if(debug>0) {"Section1 running...".postln};
+      if(debug>1) {"Section1 running...".postln};
     };
   if(array[1]==0)
     {parent.sections.section2.run(false);
-      if(debug>0) {"Section2 paused!".postln};
+      if(debug>1) {"Section2 paused!".postln};
     }
     {parent.sections.section2.run(true);
-      if(debug>0) {"Section2 running...".postln};
+      if(debug>1) {"Section2 running...".postln};
     };
   if(array[2]==0)
     {parent.sections.section3.run(false);
-      if(debug>0) {"Section3 paused!".postln};
+      if(debug>1) {"Section3 paused!".postln};
     }
     {parent.sections.section3.run(true);
-      if(debug>0) {"Section3 running...".postln};
+      if(debug>1) {"Section3 running...".postln};
     };
   if(array[3]==0)
     {parent.sections.section4.run(false);
-      if(debug>0) {"Section4 paused!".postln};
+      if(debug>1) {"Section4 paused!".postln};
     }
     {parent.sections.section4.run(true);
-      if(debug>0) {"Section4 running...".postln};
+      if(debug>1) {"Section4 running...".postln};
     };
   if(array[4]==0)
     {parent.sections.section5.run(false);
-      if(debug>0) {"Section5 paused!\n".postln};
+      if(debug>1) {"Section5 paused!\n".postln};
     }
     {parent.sections.section5.run(true);
-      if(debug>0) {"Section5 running...\n".postln};
+      if(debug>1) {"Section5 running...\n".postln};
     };
 
 }

@@ -35,6 +35,13 @@
           "Debugging...\n\n".post; // two newlines
           "Avg. CPU: %\n".postf(parent.server.avgCPU.round(0.1));
           "Peak CPU: %\n".postf(parent.server.peakCPU.round(0.1));
+
+          cond = false;
+          parent.busses.sectionFader.get({|val|
+            "\tSection Fader: %\n".postf(val); // where are we in the sections
+            cond = true;
+          });
+          while{cond.not} {0.05.wait}; // wait until we've got the value before
           "---------------------------------\n\n".post;
         };
       }
