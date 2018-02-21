@@ -48,7 +48,7 @@
       numChannels = sf.numChannels; // read into number of channels
       dur = sf.duration; // get the duration
       sf.close; // close the soundfile since we have what we need
-      buffer = Buffer.cueSoundFile(server, path, numChannels: numChannels, bufferSize: 262144); // read the file and prepare for reading from disk
+      buffer = Buffer.cueSoundFile(server, path, numChannels: numChannels, bufferSize: 131072); // read the file and prepare for reading from disk
       server.sync; // wait
       fxBus = Bus.audio(server, numChannels); // a bus for this particular episode's processing
       spatBus = Bus.audio(server, numChannels); // a bus for spatailization
