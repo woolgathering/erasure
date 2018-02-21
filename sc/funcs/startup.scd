@@ -35,7 +35,7 @@
 
   // do this every 30 seconds
   parent.timer.putDate(\pauseGroups,
-    {|date| #[0,30].includes(date.second)}, // every 30 seconds
+    {|date| #[0,15,30,45].includes(date.second)}, // every 15 seconds
     {
       if(parent.debugLevel>0) {"Pausing nodes...".postln};
       // given a sectionFader position, pause the groups appropriately:
