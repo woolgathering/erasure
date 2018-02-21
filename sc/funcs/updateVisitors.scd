@@ -50,21 +50,20 @@
   faderVal = (faderVal[0]+faderVal[1]+faderVal[2])*5; // weights add to one
 
 
-  "
-  thisIdx: %\n
-  numVistors: %\n
-  maxVisitors: %\n
-  visitorRatio: %\n
-  histRatio: %\n
-  recentHistRatio: %\n
-  faderVal: %\n
-  ---------------------\n\n
-  ".postf(thisIdx, numVistors, maxVisitors.round(0.01), visitorRatio.round(0.01), histRatio.round(0.01), recentHistRatio.round(0.01), faderVal.round(0.01));
+  // "
+  // thisIdx: %\n
+  // numVistors: %\n
+  // maxVisitors: %\n
+  // visitorRatio: %\n
+  // histRatio: %\n
+  // recentHistRatio: %\n
+  // faderVal: %\n
+  // ---------------------\n\n
+  // ".postf(thisIdx, numVistors, maxVisitors.round(0.01), visitorRatio.round(0.01), histRatio.round(0.01), recentHistRatio.round(0.01), faderVal.round(0.01));
 
-
-  parent.oldFaderVal = 1; // remember the old value
+  parent.startSection = parent.oldFaderVal; // remember the old value
   // FOR TESTING
-  faderVal = parent.faderStream.next * 0.5; // brownian motion. Divide by two so that we move in increments of 0.5. See line 12 in demoMode.scd
+  faderVal = (parent.faderStream.next * 0.5).clip(1,5); // brownian motion. Divide by two so that we move in increments of 0.5. See line 12 in demoMode.scd
 
   ////////////////////////////////////
   //    SOUND
