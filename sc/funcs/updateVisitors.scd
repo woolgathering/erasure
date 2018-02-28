@@ -79,6 +79,7 @@
       {
         var vol, rot, val;
         val = (inc*counter)+parent.oldFaderVal;
+        val = val.clip(1,5); // low clip
         // maybe add some noise to someVALUE? i.e. +/- 5%?
         parent.busses.sectionFader.set(val * rrand(0.98,1.02)); // set the value every 10 seconds. Lagging happens in the Ugens
 
@@ -109,6 +110,7 @@
       {
         var visServer, distort, sliced, localization, val;
         val = (inc*counter)+parent.oldFaderVal;
+        val = val.clip(1,5); // low clip
         visServer = parent.vis.server;
         // maybe add some noise to someVALUE? i.e. +/- 5%?
         // send some OSC message to the visuals machine
@@ -125,9 +127,9 @@
         if(parent.debugLevel>2) {"distort: %\nsliced: %\nlocal: %\n\n".postf(distort, sliced, localization)};
 
         // send the values to the visual machine
-        vis.server.sendMsg("/erasure/distort", distort, 45); // lag really long to act as a lp filter
-        vis.server.sendMsg("/erasure/sliced", sliced, 45);
-        vis.server.sendMsg("/erasure/localization", localization, 45);
+        vis.server.sendMsg("/erasure/distort", distort, 60); // lag really long to act as a lp filter
+        vis.server.sendMsg("/erasure/sliced", sliced, 60);
+        vis.server.sendMsg("/erasure/localization", localization, 60);
 
         counter = counter + 1;
         10.wait; // wait 10 seconds.
