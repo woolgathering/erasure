@@ -71,6 +71,7 @@
 parent.arrays = (
   rotation: Object.readArchive(parent.thisDir++"/sc/arrays/rotation"),
   volume: Object.readArchive(parent.thisDir++"/sc/arrays/volume"),
+  reverb: Object.readArchive(parent.thisDir++"/sc/arrays/reverb"),
 );
 
   ////////////////////////////
