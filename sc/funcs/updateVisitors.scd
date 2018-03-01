@@ -67,7 +67,7 @@
   };
 
   // FOR TESTING
-  faderVal = (parent.faderStream.next * 0.5).clip(1,5); // brownian motion. Divide by two so that we move in increments of 0.5. See line 12 in demoMode.scd
+  faderVal = (parent.faderStream.next * 0.5).clip(1,6); // brownian motion. Divide by two so that we move in increments of 0.5. See line 12 in demoMode.scd
 
   ////////////////////////////////////
   //    SOUND
@@ -77,9 +77,8 @@
     inc = (faderVal-parent.oldFaderVal)/30; // find the increment
     while({counter<=31},
       {
-        var vol, rot, val;
+        var vol, rot, val, rev;
         val = (inc*counter)+parent.oldFaderVal;
-        val = val.clip(1,5); // low clip
         // maybe add some noise to someVALUE? i.e. +/- 5%?
         parent.busses.sectionFader.set(val * rrand(0.98,1.02)); // set the value every 10 seconds. Lagging happens in the Ugens
 
@@ -87,11 +86,14 @@
 
 
         // and master volume!!!
-        vol = parent.arrays.volume.blendAt(val.linlin(1,5,0,2047) * rrand(0.98,1.02)); // index
+        vol = parent.arrays.volume.blendAt(val.linlin(1,6,0,2047) * rrand(0.98,1.02)); // index
         parent.busses.volume.set(vol.dbamp); // convert dB to linear amplitude and set it
 
-        rot = parent.arrays.volume.blendAt(val.linlin(1,5,0,2047) * rrand(0.98,1.02)); // index
+        rot = parent.arrays.rotation.blendAt(val.linlin(1,6,0,2047) * rrand(0.98,1.02)); // index
         parent.groups.sections.set(\rotSpd, rot.reciprocal); // reciporcal and set it
+
+        rev = parent.arrays.reverb.blendAt(val.linlin(1,6,0,2047) * rrand(0.98,1.02)); // index
+        parent.groups.revAndOut.set(\mix, rev);
 
         counter = counter + 1;
         if(counter==30) {parent.oldFaderVal = faderVal};
@@ -110,7 +112,6 @@
       {
         var visServer, distort, sliced, localization, val;
         val = (inc*counter)+parent.oldFaderVal;
-        val = val.clip(1,5); // low clip
         visServer = parent.vis.server;
         // maybe add some noise to someVALUE? i.e. +/- 5%?
         // send some OSC message to the visuals machine
@@ -119,9 +120,9 @@
         // visServer.sendMsg("/erasure/distort", distort, 10); // for instance where distort is the value and 10 is the lag time that's sent to the visual
 
         // index into the arrays
-        distort = vis.visArrays.distort.blendAt((val*rrand(0.98,1.02)).linlin(1,5,0,2047));
-        sliced = vis.visArrays.sliced.blendAt((val*rrand(0.98,1.02)).linlin(1,5,0,2047));
-        localization = vis.visArrays.localization.blendAt((val*rrand(0.98,1.02)).linlin(1,5,0,2047));
+        distort = vis.visArrays.distort.blendAt((val*rrand(0.98,1.02)).linlin(1,6,0,2047));
+        sliced = vis.visArrays.sliced.blendAt((val*rrand(0.98,1.02)).linlin(1,6,0,2047));
+        localization = vis.visArrays.localization.blendAt((val*rrand(0.98,1.02)).linlin(1,6,0,2047));
 
         // print debugging information. To be moved to debug.scd
         if(parent.debugLevel>2) {"distort: %\nsliced: %\nlocal: %\n\n".postf(distort, sliced, localization)};
