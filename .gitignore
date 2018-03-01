@@ -8,3 +8,6 @@ test.scd
 
 # don't save things in /bench for now
 /bench/*
+
+# don't save things in the documentation
+/documentation/*
