@@ -27,6 +27,7 @@
   SynthDef(\reverb, {|inBus, outBus, impulseBuffs = #[0,0], initDel = 0.02, mix = -1, leak = 0.01, hp = 250|
     var sig, rev, leakSig;
     sig = In.ar(inBus, 16); // 16 channels
+    mix = mix.lag3(30); // low pass the mix signal
     rev = DelayN.ar(sig, (initDel+Rand(0.0,0.001) ! 16), initDel+0.001); // initial delay
     leakSig = Mix(rev)*leak; // a little bit of everything for each channel, regardless of position
     // individual reverbs on each channel
@@ -53,6 +54,7 @@
     rev = HPF.ar(rev, hp); // highpass
     rev = CompanderD.ar(rev, 0.707, 1, 0.666); // compress it just to be safe
     sig = XFade2.ar(sig, rev*0.17782, mix.lag2(5)); // mix wet and dry
+    sig = LeakDC.ar(sig); // make sure we're cool
     Out.ar(outBus, sig); // send it out
     // Out.ar(outBus, (rev*wet*0.17782)+(sig*dry)); // send it out
   }).send(parent.server);
