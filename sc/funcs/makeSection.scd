@@ -1,16 +1,19 @@
 // start section
-{|parent, episodeFiles, overlap = 0.25, start = 0, end = 1, secIdx = 0|
+{|parent, episodeFiles, overlap = 0.25, secIdx = 0|
 
   /*
   Start a section with composite episodes. Make everything necessary, including buffers, busses, groups, etc. Currently divides episodes evenly in the section
   */
 
-  var server, sectionDict, groups, busses, buffers, episodes, divisions, sectionFader, pipe, lfoTable, cond, secEnvelope;
+  var server, sectionDict, groups, busses, buffers, episodes, divisions, sectionFader, pipe, lfoTable, cond, secEnvelope, start, end;
 
   sectionDict = (); // an empty dictionary for this stuff
   episodes = (); // an empty dict for the episodes
   server = parent.server; // get the server
   cond = false; // condition to wait for the section to finish building before moving on
+  start = secIdx + 1; // set the start
+  end = secIdx + 2; // set the end
+
 
   busses = (); // an empty dict for busses
   busses.episodeFader = Bus.control(server, 1); // a bus that tells us where we are in the episode lineage
