@@ -62,7 +62,7 @@ fork {
     "Making Section %...\n".postf(i+1); // tell us what section we're on during boot
     sectionName = "section%".format(i+1).asSymbol; // get the name
     episodeFiles = (parent.thisDir++"/sound/%/*.wav".format(sectionName)).pathMatch; // get the directory
-    thisSection = parent.makeSection(episodeFiles, 0.05, i+1, i+2, i, parent.numSecs); // default arguments. Make sure start and end make sense!
+    thisSection = parent.makeSection(episodeFiles.scramble, 0.1, i); // default arguments. Make sure start and end make sense!
     parent.server.sync; // wait for stuff to finish
     parent.sections.put(sectionName, thisSection); // remember this section
   };
