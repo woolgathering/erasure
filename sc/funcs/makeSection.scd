@@ -10,7 +10,7 @@
   sectionDict = (); // an empty dictionary for this stuff
   episodes = (); // an empty dict for the episodes
   server = parent.server; // get the server
-  cond = false; // condition to wait for the section to finish building before moving on
+  // cond = false; // condition to wait for the section to finish building before moving on
   start = secIdx + 1; // set the start
   end = secIdx + 2; // set the end
 
@@ -18,7 +18,7 @@
   busses = (); // an empty dict for busses
   busses.episodeFader = Bus.control(server, 1); // a bus that tells us where we are in the episode lineage
   busses.fxBus = Bus.audio(server, 4); // a bus for processing
-  busses.pipeBus = Bus.audio(server, 16); // a bus to pipe out stuff from each episode post-spatialization
+  busses.pipeBus = Bus.audio(server, 4); // a bus to pipe out stuff from each episode post-spatialization
 
   groups = (); // an empty dict for groups
   groups.master = Group.tail(parent.groups.sections); // a new group to encapsulate all of the synths for the section
@@ -92,7 +92,7 @@
       // put it all together
       thisEpisode = (player: player, fx: fx, spat: spat, buffer: buffer, spatBus: spatBus, fxBus: fxBus);
       episodes.put(episodeName, thisEpisode); // remember it
-      if(i==4) {cond = true};
+      // if(i==4) {cond = true};
     };
   };
 

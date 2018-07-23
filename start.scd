@@ -1,8 +1,8 @@
 (
 ~parent = ();
 ~parent.server = Server.default;
-~parent.thisDir = "~/Desktop/erasure/erasure".standardizePath;
-~parent.startSection = 2;
+~parent.thisDir = "~/Documents/jacob/pieces/erasure".standardizePath;
+~parent.startSection = 1;
 ~parent.debugLevel = 3;
 ~parent.demoMode = true;
 
@@ -15,7 +15,7 @@ File.include(~parent.thisDir ++ "/sc/serverSettings.scd", ~parent);
 "";
 )
 
-~parent.busses.volume.scope;
+~parent.busses.volrume.scope;
 ~parent.server.plotTree;
 ~parent.server.meter
 ~parent.sections.section1.busses.fxBus.scope
@@ -24,3 +24,8 @@ File.include(~parent.thisDir ++ "/sc/serverSettings.scd", ~parent);
 ~parent.server.makeGui
 
 ~parent.spat
+
+
+
+~parent.server.record("~/Desktop/erasure_take3.wav", 0, 8, duration: 1300);
+fork {1301.wait; CmdPeriod.run}

@@ -23,8 +23,8 @@ parent.sendEmail = File.include(parent.thisDir++"/sc/funcs/sendEmail.scd"); // s
 parent.doChecks = File.include(parent.thisDir++"/sc/funcs/doChecks.scd"); // check to make sure everything is still functioning as it should
 
 parent.busses = (
-  mainOut: Bus.audio(parent.server, 16),
-  rev: Bus.audio(parent.server, 16),
+  mainOut: Bus.audio(parent.server, 4),
+  rev: Bus.audio(parent.server, 4),
   volume: Bus.control(parent.server, 1),
   sectionFader: Bus.control(parent.server, 1), // fader for the sections
 );
