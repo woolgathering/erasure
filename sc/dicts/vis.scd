@@ -9,10 +9,10 @@
 
 {|parent|
   var vis, server, oscFuncs, distort, slice, localization, visArrays;
-  vis = (); // an empty dictionary for the visuals
+  vis = parent.vis; // the dictionary as set in start.scd
   vis.put(\interval, 10); // the default interpolation interval in seconds (see the forked visual routine in updateVisitors() at the bottom)
   oscFuncs = (); // an emtpy dictionary
-  server = NetAddr("172.27.2.5", 8338); // IP address and port of visual processing server
+  server = NetAddr(vis.ip, vis.port); // IP address and port of visual processing server
 
   // this might not be necessary. Only if we want a special trajectory.
   visArrays = (

@@ -1,10 +1,12 @@
 (
 ~parent = ();
 ~parent.server = Server.default;
-~parent.thisDir = "~/Documents/jacob/pieces/erasure".standardizePath;
-~parent.startSection = 1;
+~parent.thisDir = "~/Documents/erasure/erasure".standardizePath;
+~parent.startSection = 2;
 ~parent.debugLevel = 3;
 ~parent.demoMode = true;
+
+~parent.vis = (ip: "127.0.0.1", port: 8338); // the info for the visuals machine
 
 File.include(~parent.thisDir ++ "/sc/serverSettings.scd", ~parent);
 ~parent.server.waitForBoot({
@@ -15,17 +17,27 @@ File.include(~parent.thisDir ++ "/sc/serverSettings.scd", ~parent);
 "";
 )
 
-~parent.busses.volrume.scope;
+Quarks
+
+Platform.userExtensionDir
+
+~parent.busses.volume.scope;
 ~parent.server.plotTree;
 ~parent.server.meter
 ~parent.sections.section1.busses.fxBus.scope
 
+~parent.server.inputStreamsEnabled = "0";
 
 ~parent.server.makeGui
 
+a = 500.collect{~parent.faderStream.next * 0.25}
+a.plot
+a.maxItem
+
+22*0.25
+
 ~parent.spat
 
+~parent.arrays.volume.plot
 
-
-~parent.server.record("~/Desktop/erasure_take3.wav", 0, 8, duration: 1300);
-fork {1301.wait; CmdPeriod.run}
+"~/Documents/erasure/erasure".standardizePath;

@@ -37,7 +37,7 @@
   fork {
     // move through the episodes in a section
     sectionFader = Synth(\section_LFO,
-      [outBus: busses.episodeFader, speed: rrand(600,700).reciprocal, pause: 1],
+      [outBus: busses.episodeFader, speed: rrand(1800,2000).reciprocal, pause: 1],
       target: groups.master, addAction: \addToHead
     );
 

@@ -33,6 +33,13 @@
     parent.maintainence; // run the maintainence function
   );
 
+  // setup for pausing things correctly
+  parent.section1PauseDict = (goingToPause: false, pauseRoutine: nil);
+  parent.section2PauseDict = (goingToPause: false, pauseRoutine: nil);
+  parent.section3PauseDict = (goingToPause: false, pauseRoutine: nil);
+  parent.section4PauseDict = (goingToPause: false, pauseRoutine: nil);
+  parent.section5PauseDict = (goingToPause: false, pauseRoutine: nil);
+
   // do this every 30 seconds
   parent.timer.putDate(\pauseGroups,
     {|date| #[0,15,30,45].includes(date.second)}, // every 15 seconds

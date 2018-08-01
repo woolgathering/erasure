@@ -5,7 +5,7 @@
     sig = In.ar(inBus, 4); // 16 channels in
     fader = fader.lag2(10); // 10 second lag (see Routine in updateVisitors)
     fader = fader.linlin(start, end, 0, envBuffSize).clip(0,envBuffSize); // convert shit; clip it before passing
-    env = IndexL.kr(envBuff, fader).lag2(20); // get our current amplitude and smooth it a bit
+    env = IndexL.kr(envBuff, fader).lag2(45); // get our current amplitude and smooth it a bit
     Out.ar(outBus, sig*env);
     PauseSelf.kr(pause);
   }).send(parent.server);
@@ -19,7 +19,8 @@
 
   SynthDef(\section_LFO, {|outBus, speed, pause = 0|
     var trig, val;
-    val = LFNoise2.kr(speed).range(0,1);
+    // val = LFNoise2.kr(speed).range(0,1);
+    val = LFDNoise3.kr(speed).range(0,1);
     // PauseSelf.kr(pause);
     Out.kr(outBus, val);
   }).send(parent.server);
@@ -64,7 +65,7 @@
     sig = In.ar(inBus, 4); // 16 channels in
     // lev = MouseX.kr(0,1);
     // sig = sig.collect{|chan| NoiseVol.ar(chan, lev)};
-    sig = BAllPass.ar(sig, (Rand(1000, 10000) ! 16), 0.8); // change the phases of each speaker
+    sig = BAllPass.ar(sig, (Rand(1000, 10000) ! 4), 0.8); // change the phases of each speaker
     Out.ar(outBus, HPF.ar(sig*amp, 50)); // hipass and send it out
   }).send(parent.server);
 
@@ -89,10 +90,15 @@
   }).send(parent.server);
 
   // simple processing: noise volume, distortion, delay(?), etc. No reverb.
-  SynthDef(\fxSynth_4ch, {|inBus, outBus, noiseLev, dryWetMix = 0.5|
+  SynthDef(\fxSynth_4ch, {|inBus, outBus, noiseLev = 1, dryWetMix = 0.5|
     var sig;
     sig = In.ar(inBus, 4); // signal in
-    // sig = NoiseVol.ar(sig, noiseLev); // noise volume before reverb
+    // sig = sig.collect{|chan|
+    //   var val;
+    //   val = MouseX.kr(0,1);
+    //   NoiseVol.ar(chan, val) * val.linexp(0,1,3,1); // noise volume before reverb
+    // };
+    // sig = NoiseVol.ar(sig, MouseX.kr(0,1)); // noise volume before reverb
     // sig = Distortion.ar(sig, dist);
 
     Out.ar(outBus, sig); // send it out
@@ -137,6 +143,11 @@
   SynthDef(\fxSynth_8ch, {|inBus, outBus, noiseLev, dryWetMix = 0.5|
     var sig;
     sig = In.ar(inBus, 8); // signal in
+    // sig = sig.collect{|chan|
+    //   var val;
+    //   val = MouseX.kr(0,1);
+    //   NoiseVol.ar(chan, val) * val.linexp(0,1,3,1); // noise volume before reverb
+    // };
     // sig = NoiseVol.ar(sig, noiseLev); // noise volume before reverb
     // sig = Distortion.ar(sig, dist);
 

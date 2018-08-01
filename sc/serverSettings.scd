@@ -16,13 +16,17 @@
     },
     \linux, {
       // Server.supernova; // use supernova (Linux only)
+    },
+    \windows, {
+      // server.options.device = "MME : Speakers (AudioBox 1818 VSL)";
     }
   );
-  server.options.numOutputBusChannels = 16; // 16 output (16.2). Subs are routed externally
-  server.options.numInputBusChannels = 0; // no input
+  server.options.numOutputBusChannels = 4; // 16 output (16.2). Subs are routed externally
+  server.options.numInputBusChannels = 1; // no input
+  // server.options.inputStreamsEnabled = "0"; // no input
   server.options.memSize = 2.pow(16); // lots of memory; don't get cheap on me
   server.options.sampleRate = 48000; // 48k
-  server.options.memoryLocking = true; // locking memory is a good thing?
+  server.options.memoryLocking = false; // locking memory is a good thing?
   server.options.numAudioBusChannels = 2048; // default value ready to be changed (double)
   server.options.maxSynthDefs = 4096; // quadruple as large as default
   server.options.maxNodes = 4096; // quadruple
