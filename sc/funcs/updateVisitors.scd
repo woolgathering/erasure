@@ -67,7 +67,7 @@
   };
 
   // FOR TESTING
-  faderVal = (parent.faderStream.next * 0.25).clip(0.5,6); // brownian motion. Divide by two so that we move in increments of 0.5. See line 12 in demoMode.scd
+  faderVal = (parent.faderStream.next * 0.15).clip(0.5,5.5); // brownian motion. Divide by two so that we move in increments of 0.5. See line 12 in demoMode.scd
 
   ////////////////////////////////////
   //    SOUND
@@ -80,19 +80,19 @@
         var vol, rot, val, rev;
         val = (inc*counter)+parent.oldFaderVal;
         // maybe add some noise to someVALUE? i.e. +/- 5%?
-        parent.busses.sectionFader.set((val * rrand(0.98,1.02)).clip(0.5,6)); // set the value every 10 seconds. Lagging happens in the Ugens
+        parent.busses.sectionFader.set((val * rrand(0.98,1.02)).clip(0.5,5.5)); // set the value every 10 seconds. Lagging happens in the Ugens
 
         // also set the localized distorion, noiseVol, reverb, rotational speed, etc.
 
 
         // and master volume!!!
-        vol = parent.arrays.volume.blendAt(val.linlin(0.5,6,0,2047) * rrand(0.98,1.02)); // index
+        vol = parent.arrays.volume.blendAt(val.linlin(0.5,5.5,0,2047) * rrand(0.98,1.02)); // index
         parent.busses.volume.set(vol.dbamp); // convert dB to linear amplitude and set it
 
-        rot = parent.arrays.rotation.blendAt(val.linlin(0.5,6,0,2047) * rrand(0.98,1.02)); // index
+        rot = parent.arrays.rotation.blendAt(val.linlin(0.5,5.5,0,2047) * rrand(0.98,1.02)); // index
         parent.groups.sections.set(\rotSpd, rot.reciprocal); // reciporcal and set it
 
-        rev = parent.arrays.reverb.blendAt(val.linlin(0.5,6,0,2047) * rrand(0.98,1.02)); // index
+        rev = parent.arrays.reverb.blendAt(val.linlin(0.5,5.5,0,2047) * rrand(0.98,1.02)); // index
         parent.groups.revAndOut.set(\mix, rev);
 
         counter = counter + 1;
@@ -110,7 +110,7 @@
     inc = (faderVal-parent.oldFaderVal)/30; // find the increment
     while({counter<=31},
       {
-        var visServer, distort, sliced, localization, val;
+        var visServer, distort, sliced, localization, speed, focalLength, val;
         val = (inc*counter)+parent.oldFaderVal;
         visServer = parent.vis.server;
         // maybe add some noise to someVALUE? i.e. +/- 5%?
@@ -120,17 +120,21 @@
         // visServer.sendMsg("/erasure/distort", distort, 10); // for instance where distort is the value and 10 is the lag time that's sent to the visual
 
         // index into the arrays
-        distort = vis.visArrays.distort.blendAt((val*rrand(0.98,1.02)).linlin(0.5,6,0,2047));
-        sliced = vis.visArrays.sliced.blendAt((val*rrand(0.98,1.02)).linlin(0.5,6,0,2047));
-        localization = vis.visArrays.localization.blendAt((val*rrand(0.98,1.02)).linlin(0.5,6,0,2047));
+        distort = vis.visArrays.distort.blendAt((val*rrand(0.98,1.02)).linlin(0.5,5.5,0,2047));
+        sliced = vis.visArrays.sliced.blendAt((val*rrand(0.98,1.02)).linlin(0.5,5.5,0,2047));
+        localization = vis.visArrays.localization.blendAt((val*rrand(0.98,1.02)).linlin(0.5,5.5,0,2047));
+        speed = vis.visArrays.speed.blendAt((val*rrand(0.98,1.02)).linlin(0.5,5.5,0,2047));
+        focalLength = vis.visArrays.focalLength.blendAt((val*rrand(0.98,1.02)).linlin(0.5,5.5,0,2047));
 
         // print debugging information. To be moved to debug.scd
-        if(parent.debugLevel>2) {"distort: %\nsliced: %\nlocal: %\n\n".postf(distort, sliced, localization)};
+        if(parent.debugLevel>0) {"distort: %\nsliced: %\nlocal: %\nspeed: %\nfocal_length: %\n\n".postf(distort, sliced, localization, speed, focalLength)};
 
         // send the values to the visual machine
         vis.server.sendMsg("/erasure/distort", distort, 180); // lag really long to act as a lp filter
         vis.server.sendMsg("/erasure/sliced", sliced, 180);
         vis.server.sendMsg("/erasure/localization", localization, 180);
+        vis.server.sendMsg("/erasure/speed", speed, 30);
+        vis.server.sendMsg("/erasure/focal_length", focalLength, 180);
 
         counter = counter + 1;
         10.wait; // wait 10 seconds.

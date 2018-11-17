@@ -18,7 +18,9 @@
   visArrays = (
     distort: Object.readArchive(parent.thisDir++"/sc/arrays/distort"),
     sliced: Object.readArchive(parent.thisDir++"/sc/arrays/sliced"),
-    localization: Object.readArchive(parent.thisDir++"/sc/arrays/localization")
+    localization: Object.readArchive(parent.thisDir++"/sc/arrays/localization"),
+    speed: Object.readArchive(parent.thisDir++"/sc/arrays/speed"),
+    focalLength: Object.readArchive(parent.thisDir++"/sc/arrays/focalLength")
   );
   vis.put(\visArrays, visArrays); // add it to the master visual dictionary
 

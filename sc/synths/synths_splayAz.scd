@@ -3,7 +3,7 @@
   SynthDef(\sectionPipe, {|inBus, outBus, fader, envBuff, envBuffSize, start, end, pause = 0|
     var sig, env;
     sig = In.ar(inBus, 4); // 16 channels in
-    fader = fader.lag2(10); // 10 second lag (see Routine in updateVisitors)
+    fader = fader.lag2(45); // 10 second lag (see Routine in updateVisitors)
     fader = fader.linlin(start, end, 0, envBuffSize).clip(0,envBuffSize); // convert shit; clip it before passing
     env = IndexL.kr(envBuff, fader).lag2(45); // get our current amplitude and smooth it a bit
     Out.ar(outBus, sig*env);
@@ -86,7 +86,7 @@
     pos = pos.linlin(start, end, 0, envBuffSize).clip(0,envBuffSize); // convert stuff; clip it before passing
     env = IndexL.kr(envBuff, pos.lag2(10)); // get our current amplitude and smooth it a bit
     sig = sig*env; // multiply
-    Out.ar(outBus, sig);
+    Out.ar(outBus, sig);
   }).send(parent.server);
 
   // simple processing: noise volume, distortion, delay(?), etc. No reverb.
@@ -136,7 +136,7 @@
     pos = pos.linlin(start, end, 0, envBuffSize).clip(0,envBuffSize); // convert stuff; clip it before passing
     env = IndexL.kr(envBuff, pos.lag2(10)); // get our current amplitude and smooth it a bit
     sig = sig*env; // multiply
-    Out.ar(outBus, sig);
+    Out.ar(outBus, sig);
   }).send(parent.server);
 
   // simple processing: noise volume, distortion, delay(?), etc. No reverb.

@@ -18,7 +18,7 @@
       // Server.supernova; // use supernova (Linux only)
     },
     \windows, {
-      // server.options.device = "MME : Speakers (AudioBox 1818 VSL)";
+			server.options.device = "MME : Speakers (AudioBox 1818 VSL)";
     }
   );
   server.options.numOutputBusChannels = 4; // 16 output (16.2). Subs are routed externally

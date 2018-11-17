@@ -2,8 +2,8 @@
 ~parent = ();
 ~parent.server = Server.default;
 ~parent.thisDir = "~/Documents/erasure/erasure".standardizePath;
-~parent.startSection = 2;
-~parent.debugLevel = 3;
+~parent.startSection = 5;
+~parent.debugLevel = 1;
 ~parent.demoMode = true;
 
 ~parent.vis = (ip: "127.0.0.1", port: 8338); // the info for the visuals machine
@@ -12,8 +12,8 @@ File.include(~parent.thisDir ++ "/sc/serverSettings.scd", ~parent);
 ~parent.server.waitForBoot({
   "\nStarting erasure...\n---------------------------------------------\n".post;
   File.include(~parent.thisDir ++ "/sc/main.scd", ~parent);
+  ~parent.server.makeGui;
 });
-// ~parent.server.meter;
 "";
 )
 
@@ -33,6 +33,8 @@ Platform.userExtensionDir
 a = 500.collect{~parent.faderStream.next * 0.25}
 a.plot
 a.maxItem
+
+s.makeGui
 
 22*0.25
 
