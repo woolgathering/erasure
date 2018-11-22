@@ -1,0 +1,3 @@
+[submodule "raspberry/howmanypeoplearearound"]
+	path = raspberry/howmanypeoplearearound
+	url = https://github.com/woolgathering/howmanypeoplearearound.git
