@@ -69,6 +69,17 @@
     Out.ar(outBus, HPF.ar(sig*amp, 50)); // hipass and send it out
   }).send(parent.server);
 
+  SynthDef(\sub, {|inBus, outBus, amp = 0.2|
+    var sig, lev;
+    sig = In.ar(inBus, 4); // 16 channels in
+    // lev = MouseX.kr(0,1);
+	// sig = sig.collect{|chan| NoiseVol.ar(chan, lev)};
+	// sig = BAllPass.ar(sig, (Rand(1000, 10000) ! 4), 0.8); // change the phases of each speaker
+	sig = Mix.new(sig) * 0.25;
+    Out.ar(outBus, sig*amp); // hipass and send it out
+
+  }).send(parent.server);
+
   ////////////////////////////////
   /*
     4-channel synths
@@ -107,7 +118,7 @@
   SynthDef(\spat_4ch, {|outBus, inBus, rotSpd = 0.1|
     var sig, lev;
     sig = In.ar(inBus, 4); // signal in
-    sig = SplayAz.ar(4, sig, spread: 1, level: 1, width: LFNoise1.kr(0.01).range(2,3), center: 1, orientation: LFNoise1.kr(rotSpd).range(0,7));
+    sig = SplayAz.ar(4, sig, spread: 1, level: 1, width: LFNoise1.kr(0.01).range(2,2.5), center: 1, orientation: LFNoise1.kr(rotSpd).range(0,7));
     // sig = sig.collect{|chan| Pan2.ar(chan, LFNoise1.kr(0.01).range(-1, 0.5))}; // collect them into pairs
     // sig = [
     //   // lower ring

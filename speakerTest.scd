@@ -8,12 +8,12 @@
 
 var numSpeakers, interval, amp, firstOutputBus;
 
-numSpeakers = 16; // RML
+numSpeakers = 4; // RML
 interval = 2; // two seconds
 amp = -6.dbamp;
 firstOutputBus = 0;
 
-File.include("~/Desktop/erasure/erasure/sc/serverSettings.scd".standardizePath,
+File.include("~/Desktop/erasure/sc/serverSettings.scd".standardizePath,
  (server: s)
 );
 

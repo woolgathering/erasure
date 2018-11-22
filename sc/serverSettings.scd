@@ -18,10 +18,11 @@
       // Server.supernova; // use supernova (Linux only)
     },
     \windows, {
-			server.options.device = "MME : Speakers (AudioBox 1818 VSL)";
+			server.options.outDevice = "MME : Analog out 01-08 (AudioFire 12)";
+			// server.options.outDevice = nil;
     }
   );
-  server.options.numOutputBusChannels = 4; // 16 output (16.2). Subs are routed externally
+  server.options.numOutputBusChannels = 12; // 16 output (16.2). Subs are routed externally
   server.options.numInputBusChannels = 1; // no input
   // server.options.inputStreamsEnabled = "0"; // no input
   server.options.memSize = 2.pow(16); // lots of memory; don't get cheap on me

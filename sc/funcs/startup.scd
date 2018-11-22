@@ -100,4 +100,9 @@ parent.arrays = (
     target: parent.groups.revAndOut, addAction: \addToTail
   );
 
+  parent.synths.sub = Synth(\sub,
+	[inBus: parent.busses.mainout, outBus: 4, amp: 1.5],
+	target: parent.groups.revAndOut, addAction: \addToTail
+  );
+
 }
