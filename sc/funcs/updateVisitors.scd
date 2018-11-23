@@ -9,57 +9,56 @@
 
 // every 5 minutes
 {|parent|
-  var hist, good, errorMsg, vis, now, numVistors, thisIdx, prevVisitors, maxVisitors, visitorRatio, histRatio, recentHistRatio, faderVal;
+  var hist, good, errorMsg, vis, now, numVistors, thisIdx, prevVisitors, recentHistRatio, faderVal, scaler, day;
 
   hist = parent.hist; // make life easier
   vis = parent.vis; // get the visual dictionary
   now = Date.getDate; // get the date and time now
+  day = now.format("%a").toLower.asSymbol; // get the name of the day as a symbol
+  attributes = Array.fill(5, {0}); // make an array with 0's just in case
 
   // get the current number of people in the space and save it to our temporary array
   numVistors = if(parent.demoMode)
     {parent.demoPattern.next} // if we're using the pattern in demo mode
     {parent.sensor.currentCount}; // else, we're doing it for real so get the value from the sensor
+  if(numVistors.isNil || (numVisitors<0)) {parent.demoPattern.next}; // just in case, check it
   thisIdx = ((now.hour*12)+(now.minute*0.2)).floor; // the index into the tmpArray, floor corrects for when we start on a minute that is not a multiple of 5
   hist.tmpArray[thisIdx] = numVistors; // set the current number of visitors into the tmpArray
 
-  // get the number of visitors in the last poll if it's not midnight
-  prevVisitors = if(thisIdx != 0) {hist.tmpArray[thisIdx-1]} {1}; // set it to 0 if it's midnight
-
   /*
-    Math magic here to figure out where the sound+video should be given the history and present
-    visitation. Also some other stuff? Random processes?
+    weight, method of calculation
 
-    diff = numVistors - prevVisitors; // get the difference (gives the slope)
-    faderVal = SOMETHING COOL
+    0.7, numVisitors
+      |
+      -----> 0.5, numVistors (scaled between min (0) and max (30))
+      -----> 0.2, numVistors/avgVisitors_atThisTime
 
-    // faderVal should range between 1 and 5; as such it will indicate which section we're in and
-    // how far in between sections we are.
+    0.2, stats
+      |
+      -----> 0.1, avgVisitors_thisDay / maxVisitors_thisDay
+      -----> 0.1, avgVisitors_atThisTime/ avgVisitors_thisDay
+
+    0.1, noise (gauss)
   */
+  attributes[0] = (numVistors/30) * 0.5; // scale it
+  attributes[1] = (numVistors/hist.at(day)[thisIdx]) * 0.2; // scale it
+  attributes[2] = (hist.stats.at(day).avgVisitors / hist.stats.at(day).maxVisitors) * 0.1; // scale it
+  attributes[3] = (hist.at(day)[thisIdx] / hist.stats.at(day).avgVisitors) * 0.1; // scale it
+  attributes[4] = gauss(0.05, 0.015).clip(0,0.1); // noise
 
-  // get the largest number of visitors ever
-  maxVisitors = (hist.sun++hist.mon++hist.tue++hist.wed++hist.thu++hist.fri++hist.sat).maxItem;
-  visitorRatio = (numVistors/maxVisitors)*0.4; // make a ratio and multiply it by the weight
-  histRatio = hist.at(now.format("%a").toLower.asSymbol)[thisIdx].max(1); // what's our usual visitiation right now?
-  histRatio = numVistors/histRatio; // get the ratio of our visitation
+  // the scaler is calculated on the recent history ratio
+  // scaler modulates between max (6??) and higher depending on how quickly people file in. The descending rate is constant but the upward rate can be faster.
+  prevVisitors = if(thisIdx != 0) {hist.tmpArray[thisIdx-1].max(1)} {1}; // set it to 1 if it's midnight or if it was 0 (to not mess things up below)
+  recentHistRatio = numVistors/prevVisitors; // get the ratio
+  scaler = recentHistRatio.lincurve(1,3,6,18,-0.75,\max).max(0.1); // scale the ratio
+  // scaler = recentHistRatio.linlin(1,3,6,18,\max).max(0.1); // scale it
 
+  // scale the entire thing (ok if attributes.sum is greater than 1 since it's clipped before it's sent out)
+  faderVal = attributes.sum * scaler;
 
-  recentHistRatio = numVistors/prevVisitors;
-
-  faderVal = [visitorRatio, histRatio, recentHistRatio].normalizeSum; // make sure they add to one
-
-  faderVal = (faderVal[0]+faderVal[1]+faderVal[2])*5; // weights add to one
-
-
-  // "
-  // thisIdx: %\n
-  // numVistors: %\n
-  // maxVisitors: %\n
-  // visitorRatio: %\n
-  // histRatio: %\n
-  // recentHistRatio: %\n
-  // faderVal: %\n
-  // ---------------------\n\n
-  // ".postf(thisIdx, numVistors, maxVisitors.round(0.01), visitorRatio.round(0.01), histRatio.round(0.01), recentHistRatio.round(0.01), faderVal.round(0.01));
+  if(debug>0){
+    "\n\nAttributes for calculating the faderVal: %\n\n".postf(attributes);
+  };
 
   if(parent.initRun) {
     parent.oldFaderVal = parent.startSection; // set our starting section IF it's the first time
@@ -67,7 +66,7 @@
   };
 
   // FOR TESTING
-  faderVal = (parent.faderStream.next * 0.15).clip(0.5,5.5); // brownian motion. Divide by two so that we move in increments of 0.5. See line 12 in demoMode.scd
+  // faderVal = (parent.faderStream.next * 0.15).clip(0.5,5.5); // brownian motion. Divide by two so that we move in increments of 0.5. See line 12 in demoMode.scd
 
   ////////////////////////////////////
   //    SOUND
@@ -79,11 +78,8 @@
       {
         var vol, rot, val, rev;
         val = (inc*counter)+parent.oldFaderVal;
-        // maybe add some noise to someVALUE? i.e. +/- 5%?
+        val = val.clip(0.5,6); // clip it
         parent.busses.sectionFader.set((val * rrand(0.98,1.02)).clip(0.5,5.5)); // set the value every 10 seconds. Lagging happens in the Ugens
-
-        // also set the localized distorion, noiseVol, reverb, rotational speed, etc.
-
 
         // and master volume!!!
         vol = parent.arrays.volume.blendAt(val.linlin(0.5,5.5,0,2047) * rrand(0.98,1.02)); // index
@@ -112,6 +108,7 @@
       {
         var visServer, distort, sliced, localization, speed, focalLength, val;
         val = (inc*counter)+parent.oldFaderVal;
+        val = val.clip(0.5,6); // clip it
         visServer = parent.vis.server;
         // maybe add some noise to someVALUE? i.e. +/- 5%?
         // send some OSC message to the visuals machine
