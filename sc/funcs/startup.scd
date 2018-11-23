@@ -18,7 +18,6 @@
     {
       if(parent.debugLevel>0) {Date.getDate.postln}; // if we're debugging, post the time every 5 minutes
       parent.updateVisitors; // run the funtion that updates everything
-      // hist.getCurrentCount; // get the current number of vistors and remember it
 
       # good, errorMsg = parent.doChecks; // check to make sure we're still talking to the visuals and the sensor
       if(good.not) {
@@ -53,7 +52,6 @@
           {(val>3.4) and: (val<4.6)} {parent.pauseGroups([0,0,1,1,0])}
           {val>4.4} {parent.pauseGroups([0,0,0,1,1])};
       }); // get the value of the section fader
-
     }
   );
 
@@ -72,14 +70,14 @@
   parent.freeables.addAll(parent.envs); // add all these to the freeables
   parent.server.sync;
 
-///////
-// Load arrays for volume and rotation
-////////
-parent.arrays = (
-  rotation: Object.readArchive(parent.thisDir++"/sc/arrays/rotation"),
-  volume: Object.readArchive(parent.thisDir++"/sc/arrays/volume"),
-  reverb: Object.readArchive(parent.thisDir++"/sc/arrays/reverb"),
-);
+  ///////
+  // Load arrays for volume and rotation
+  ////////
+  parent.arrays = (
+    rotation: Object.readArchive(parent.thisDir++"/sc/arrays/rotation"),
+    volume: Object.readArchive(parent.thisDir++"/sc/arrays/volume"),
+    reverb: Object.readArchive(parent.thisDir++"/sc/arrays/reverb"),
+  );
 
   ////////////////////////////
   // Start synths through which everything is routed
@@ -100,9 +98,10 @@ parent.arrays = (
     target: parent.groups.revAndOut, addAction: \addToTail
   );
 
+  // add a summing synth for the subwoofer (no crossover necessary for this particular sub)
   parent.synths.sub = Synth(\sub,
-	[inBus: parent.busses.mainout, outBus: 4, amp: 1.5],
-	target: parent.groups.revAndOut, addAction: \addToTail
+  	[inBus: parent.busses.mainout, outBus: 4, amp: 1.5],
+  	target: parent.groups.revAndOut, addAction: \addToTail
   );
 
 }
