@@ -1,16 +1,16 @@
 {|parent|
 var hist = ();
 
-hist.tmpArray = Array.fill(288, rrand(1,15)); // a temporary array (this will be made anew every day)
+hist.tmpArray = Array.fill(288, 0); // a temporary array (this will be made anew every day)
 
 // arrays to hold the number of visitors every 5 minutes as set by updateVisitors()
-hist.sun = Array.rand(288, 0, 17); // random values to start
-hist.mon = Array.rand(288, 0, 17); // random values to start
-hist.tue = Array.rand(288, 0, 17); // random values to start
-hist.wed = Array.rand(288, 0, 17); // random values to start
-hist.thu = Array.rand(288, 0, 17); // random values to start
-hist.fri = Array.rand(288, 0, 17); // random values to start
-hist.sat = Array.rand(288, 0, 17); // random values to start
+hist.sun = Array.rand(288, 0, 5); // random values to start
+hist.mon = Array.rand(288, 0, 5); // random values to start
+hist.tue = Array.rand(288, 0, 5); // random values to start
+hist.wed = Array.rand(288, 0, 5); // random values to start
+hist.thu = Array.rand(288, 0, 5); // random values to start
+hist.fri = Array.rand(288, 0, 5); // random values to start
+hist.sat = Array.rand(288, 0, 5); // random values to start
 
 hist.dayCount = (); // another dictionary to count the days elapsted
 hist.dayCount.sun = 1;
@@ -21,18 +21,37 @@ hist.dayCount.thu = 1;
 hist.dayCount.fri = 1;
 hist.dayCount.sat = 1;
 
+// get some statistics
+hist.stats = ();
+hist.stats.sun = (maxVisitors: 5, minVisitors: 1, avgVisitors: 2);
+hist.stats.mon = (maxVisitors: 5, minVisitors: 1, avgVisitors: 2);
+hist.stats.tue = (maxVisitors: 5, minVisitors: 1, avgVisitors: 2);
+hist.stats.wed = (maxVisitors: 5, minVisitors: 1, avgVisitors: 2);
+hist.stats.thu = (maxVisitors: 5, minVisitors: 1, avgVisitors: 2);
+hist.stats.fri = (maxVisitors: 5, minVisitors: 1, avgVisitors: 2);
+hist.stats.sat = (maxVisitors: 5, minVisitors: 1, avgVisitors: 2);
+
 hist.calc = {|dict, day, new|
-  var old, array;
-  old = dict.at(day) * (dict.dayCount.at(day)-1); // calculate the weights
-  array = old + new; // add the two arrays together
-  array = array/dict.dayCount.at(day); // get the average
-  dict.put(day, array); // set it internally
-  // array; // make sure to return the new average
+  // calculate new averages for every 5 minutes
+  array = (dict.at(day)+new)/dict.dayCount.at(day); // get the average for every five minutes
+  dict.put(day, (dict.at(day)+new)/dict.dayCount.at(day)); // set it internally
+
+  // check if we have a new max
+  if(dict.stats.at(day).maxVisitors <= new.maxItem) {dict.stats.at(day).maxVisitors = new.maxItem};
+
+  // check if we have a new min
+  if(dict.stats.at(day).minVisitors >= new.minItem) {dict.stats.at(day).minVisitors = new.minItem};
+
+  // get a new average for the day
+  dict.stats.at(day).avgVisitors = {
+    var tmp;
+    tmp = dict.stats.at(day).avgVisitors + (new.sum/new.sum.size); // add the new value
+    dict.stats.at(day).avgVisitors = tmp / dict.dayCount.at(day); // get the new average
+  }.value;
 };
 
-hist.dayCountDay = {|dict, day|
-  dict.dayCount.put(day, dict.dayCount.at(day) + 1); // add another day
-  // dict.dayCount.at(day) = dict.dayCount.at(day) + 1; // add another day
+hist.countDay = {|dict, day|
+  dict.dayCount.at(day) = dict.dayCount.at(day) + 1; // add another day
 };
 
 hist.getHistory = {|dict, day, date|
@@ -40,20 +59,12 @@ hist.getHistory = {|dict, day, date|
   dict.dayCount.at(day)[date]; // return the value
 };
 
-// fucntion not necessary?
-hist.getCurrentCount{|dict|
-  var day, date;
-  date = Date.getDate;
-  day = date.format("%a").toLower.asSymbol;
-  // date = (6 * d.hour.asInteger) + (d.minute.asInteger/10).round; // get the index of the time
-  // parent.tmpArray[date] = parent.tracking.getCount; // get the current number of visitors in the space and remember it
-};
-
 // a function to save the history to an Archive
 hist.makeArchive = {|dict|
   var path, archive = (), file; // an empty dict for the Archive
   path = parent.thisDir++"/archives/"++Date.getDate.stamp; // get the path
   archive.dayCounts = dict.dayCount; // the number of days that have elapsted
+  archive.stats = dict.stats; // keep the stats
   archive.history = (
     sun: hist.sun,
     mon: hist.mon,
