@@ -19,7 +19,7 @@
       sensor.currentCount = msg[0].asInteger; // asInteger returns 0 if it's a string of letters
       "\n\n::::::There are currently % people in the space.\n\tsensor.getCount returned: %\n\n".postf(sensor.currentCount, msg[0]); // tell me what's going on
     },
-  '/howmanypeoplearearound', /* sensor.server */);
+  '/numPeople', nil /* sensor.server */);
   parent.freeables.add(sensor.getCurrent); // add this OSC func to freeables
 
   // reset the sensor count in the sensor module (happens at midnight)

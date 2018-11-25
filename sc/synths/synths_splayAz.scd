@@ -60,13 +60,13 @@
     // Out.ar(outBus, (rev*wet*0.17782)+(sig*dry)); // send it out
   }).send(parent.server);
 
-  SynthDef(\mainPipe, {|inBus, outBus, amp = 0.2|
+  SynthDef(\mainPipe, {|inBus, outBus, amp = 0.2, ampScaler = 1|
     var sig, lev;
     sig = In.ar(inBus, 4); // 16 channels in
     // lev = MouseX.kr(0,1);
     // sig = sig.collect{|chan| NoiseVol.ar(chan, lev)};
     sig = BAllPass.ar(sig, (Rand(1000, 10000) ! 4), 0.8); // change the phases of each speaker
-    Out.ar(outBus, HPF.ar(sig*amp, 50)); // hipass and send it out
+    Out.ar(outBus, HPF.ar(sig*amp*ampScaler, 50)); // hipass and send it out
   }).send(parent.server);
 
   SynthDef(\sub, {|inBus, outBus, amp = 0.2|
