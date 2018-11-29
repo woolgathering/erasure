@@ -81,11 +81,27 @@ hist.makeArchive = {|dict|
 // a function that restores the history from an Archive
 hist.restore = {|dict, path|
   var archive;
-  archive = Object.readArchive(path); // read in the Archive
-  hist.dayCount = archive.dayCount; // set the days that have elapsed
-  archive.history.keysValuesDo{|key, value|
-    hist.put(key, value); // set it
+  if(path.notNil) {
+    archive = Object.readArchive(path); // read in the Archive
+    hist.dayCount = archive.dayCount; // set the days that have elapsed
+    hist.stats = archive.stats;
+    archive.history.keysValuesDo{|key, value|
+      hist.put(key, value); // set it
+    };
+  } {
+    // else the path is nil (no archives) so do nothing
+    "No archives avaialble so none were loaded".warn; // but tell us
   };
+};
+
+// function to get the latest archives
+hist.getLatestArchive = {|dict|
+  var paths;
+  paths = parent.thisDir++"/archives/*.archive".pathMatch; // get the paths in an array
+  paths = p.collect{|path|
+  	[path, path.basename.splitext[0].split($_)[0].asInteger];
+  }.sort({|a,b| a[1] < b[1]}); // sort the paths by date
+  paths[paths.size-1][1]; // return the path of the latest archive
 };
 
 hist; // return the dictionary
