@@ -62,7 +62,7 @@ hist.getHistory = {|dict, day, date|
 // a function to save the history to an Archive
 hist.makeArchive = {|dict|
   var path, archive = (), file; // an empty dict for the Archive
-  path = parent.thisDir++"/archives/"++Date.getDate.stamp; // get the path
+  path = parent.thisDir++"/archives/"++Date.getDate.yesterday.stamp++".archive"; // get the path
   archive.dayCounts = dict.dayCount; // the number of days that have elapsted
   archive.stats = dict.stats; // keep the stats
   archive.history = (
