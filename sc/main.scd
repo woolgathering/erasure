@@ -71,6 +71,11 @@ fork {
   parent.updateVisitors;
   parent.server.sync;
 
+  // if we want to load histories, do it
+  if(parent.loadHist) {
+    parent.hist.restore(parent.hist.getLatestArchive); // load the latest archive
+  };
+
   // make the CmdPeriod function
   File.include(parent.thisDir++"/sc/funcs/cmdPeriod.scd", parent);
 
