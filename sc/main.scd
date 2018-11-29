@@ -52,7 +52,7 @@ fork {
   parent.server.sync;
 
   // run the startup function after reverb since it starts the reverb synth
-  parent.startup(0.1); // startup as 10% overlap between sections
+  parent.startup(0.15); // startup as 10% overlap between sections
   parent.server.sync;
 
   // make the sections
