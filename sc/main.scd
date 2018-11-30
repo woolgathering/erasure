@@ -6,6 +6,7 @@ parent.freeables = List.new(0); // an emtpy list for things that can be freed
 parent.initRun = true; // to correctly set the starting section
 parent.hist = File.include(parent.thisDir++"/sc/dicts/hist.scd", parent); // compile and evaluate the hist dictionary
 parent.vis = File.include(parent.thisDir++"/sc/dicts/vis.scd", parent); // compile and evaluate the visual dictionary
+parent.sensor = File.include(parent.thisDir++"/sc/dicts/sensor.scd", parent);
 parent.timer = DayTimer(\erasure); // a DayTimer for the installation
 
 parent.startup = File.include(parent.thisDir++"/sc/funcs/startup.scd"); // function that starts the piece. Execute after everything is loaded.

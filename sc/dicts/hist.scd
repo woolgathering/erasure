@@ -4,13 +4,13 @@ var hist = ();
 	hist.tmpArray = Array.fill(288, {rrand(1,15)}); // a temporary array (this will be made anew every day)
 
 // arrays to hold the number of visitors every 5 minutes as set by updateVisitors()
-hist.sun = Array.rand(288, 0, 15); // random values to start
-hist.mon = Array.rand(288, 0, 15); // random values to start
-hist.tue = Array.rand(288, 0, 15); // random values to start
-hist.wed = Array.rand(288, 0, 15); // random values to start
-hist.thu = Array.rand(288, 0, 15); // random values to start
-hist.fri = Array.rand(288, 0, 15); // random values to start
-hist.sat = Array.rand(288, 0, 15); // random values to start
+hist.sun = Array.rand(288, 0, 30); // random values to start
+hist.mon = Array.rand(288, 0, 30); // random values to start
+hist.tue = Array.rand(288, 0, 30); // random values to start
+hist.wed = Array.rand(288, 0, 30); // random values to start
+hist.thu = Array.rand(288, 0, 30); // random values to start
+hist.fri = Array.rand(288, 0, 30); // random values to start
+hist.sat = Array.rand(288, 0, 30); // random values to start
 
 hist.dayCount = (); // another dictionary to count the days elapsted
 hist.dayCount.sun = 1;
@@ -98,12 +98,18 @@ hist.restore = {|dict, path|
 
 // function to get the latest archives
 hist.getLatestArchive = {|dict|
-  var paths;
-  paths = parent.thisDir++"/archives/*.archive".pathMatch; // get the paths in an array
-  paths = p.collect{|path|
-  	[path, path.basename.splitext[0].split($_)[0].asInteger];
-  }.sort({|a,b| a[1] < b[1]}); // sort the paths by date
-  paths[paths.size-1][1]; // return the path of the latest archive
+  var paths, return;
+  paths = (parent.thisDir++"/sc/archives/*.archive").pathMatch; // get the paths in an array
+  if(paths.size != 0) {
+    paths = p.collect{|path|
+  	  [path, path.basename.splitext[0].split($_)[0].asInteger];
+    }.sort({|a,b| a[1] < b[1]}); // sort the paths by date
+    return = paths[paths.size-1][1]; // return the path of the latest archive
+  } {
+    return = nil;
+  };
+  return;
+
 };
 
 hist; // return the dictionary

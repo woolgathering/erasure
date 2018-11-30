@@ -40,7 +40,7 @@
 
     0.1, noise (gauss)
   */
-  attributes[0] = (numVistors/30) * 0.5; // scale it
+  attributes[0] = (numVistors/70) * 0.5; // scale it
   attributes[1] = (numVistors/hist.at(day)[thisIdx]) * 0.2; // scale it
   attributes[2] = (hist.stats.at(day).avgVisitors / hist.stats.at(day).maxVisitors) * 0.1; // scale it
   attributes[3] = (hist.at(day)[thisIdx] / hist.stats.at(day).avgVisitors) * 0.1; // scale it
@@ -50,11 +50,11 @@
   // scaler modulates between max (6??) and higher depending on how quickly people file in. The descending rate is constant but the upward rate can be faster.
   prevVisitors = if(thisIdx != 0) {hist.tmpArray[thisIdx-1].max(1)} {1}; // set it to 1 if it's midnight or if it was 0 (to not mess things up below)
   recentHistRatio = numVistors/prevVisitors; // get the ratio
-  scaler = recentHistRatio.lincurve(1,3,6,10,-0.75,\max).max(0.1); // scale the ratio
+  scaler = recentHistRatio.lincurve(1,3,5.5,10,-0.75,\max).max(0.1); // scale the ratio
   // scaler = recentHistRatio.linlin(1,3,6,18,\max).max(0.1); // scale it
 
   // scale the entire thing (ok if attributes.sum is greater than 1 since it's clipped before it's sent out)
-  attributes = attributes.clip(0,2)
+  attributes = attributes.clip(0,2);
   faderVal = attributes.sum * scaler;
 
   if(parent.debugLevel>0){
@@ -69,7 +69,7 @@
   };
 
   // FOR TESTING
-  faderVal = (parent.faderStream.next * 0.15).clip(0.5,5.5); // brownian motion. Divide by two so that we move in increments of 0.5. See line 12 in demoMode.scd
+	// faderVal = (parent.faderStream.next * 0.15).clip(0.5,5.5); // brownian motion. Divide by two so that we move in increments of 0.5. See line 12 in demoMode.scd
 
   ////////////////////////////////////
   //    SOUND
@@ -130,11 +130,11 @@
         if(parent.debugLevel>0) {"distort: %\nsliced: %\nlocal: %\nspeed: %\nfocal_length: %\n\n".postf(distort, sliced, localization, speed, focalLength)};
 
         // send the values to the visual machine
-        vis.server.sendMsg("/erasure/distort", distort, 180); // lag really long to act as a lp filter
-        vis.server.sendMsg("/erasure/sliced", sliced, 180);
-        vis.server.sendMsg("/erasure/localization", localization, 180);
-        vis.server.sendMsg("/erasure/speed", speed, 30);
-        vis.server.sendMsg("/erasure/focal_length", focalLength, 180);
+        vis.server.sendMsg("/erasure/distort", distort, 120); // lag really long to act as a lp filter
+        vis.server.sendMsg("/erasure/sliced", sliced, 120);
+        vis.server.sendMsg("/erasure/localization", localization, 120);
+        vis.server.sendMsg("/erasure/speed", speed, 45);
+        vis.server.sendMsg("/erasure/focal_length", focalLength, 120);
 
         counter = counter + 1;
         10.wait; // wait 10 seconds.

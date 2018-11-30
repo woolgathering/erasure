@@ -16,13 +16,14 @@
   // get the current count from the sensor module
   sensor.getCount = OSCFunc({|msg,time|
       // set sensor.currentCount to whatever it is that our sensor module is reading as the current
-      sensor.currentCount = msg[0].asInteger; // asInteger returns 0 if it's a string of letters
-      "\n\n::::::There are currently % people in the space.\n\tsensor.getCount returned: %\n\n".postf(sensor.currentCount, msg[0]); // tell me what's going on
+      sensor.currentCount = msg[1].asInteger; // asInteger returns 0 if it's a string of letters
+      "\n\n::::::There are currently % people in the space.\n\tsensor.getCount returned: %\n\n".postf(sensor.currentCount, msg[1]); // tell me what's going on
     },
   '/numPeople', nil /* sensor.server */);
   parent.freeables.add(sensor.getCurrent); // add this OSC func to freeables
 
   // reset the sensor count in the sensor module (happens at midnight)
   // THIS HAPPENS IN maintainence.scd!!
+  sensor; // return
 
 }
