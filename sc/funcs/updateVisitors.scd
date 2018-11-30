@@ -9,7 +9,7 @@
 
 // every 5 minutes
 {|parent|
-  var hist, good, errorMsg, vis, now, numVistors, thisIdx, prevVisitors, recentHistRatio, faderVal, scaler, day;
+  var hist, good, errorMsg, vis, now, numVistors, thisIdx, prevVisitors, recentHistRatio, faderVal, scaler, day, attributes;
 
   hist = parent.hist; // make life easier
   vis = parent.vis; // get the visual dictionary
