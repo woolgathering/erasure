@@ -21,7 +21,7 @@
   numVistors = if(parent.demoMode)
     {parent.demoPattern.next} // if we're using the pattern in demo mode
     {parent.sensor.currentCount}; // else, we're doing it for real so get the value from the sensor
-  if(numVistors.isNil || (numVisitors<0)) {parent.demoPattern.next}; // just in case, check it
+  if(numVistors.isNil || (numVistors<0)) {parent.demoPattern.next}; // just in case, check it
   thisIdx = ((now.hour*12)+(now.minute*0.2)).floor; // the index into the tmpArray, floor corrects for when we start on a minute that is not a multiple of 5
   hist.tmpArray[thisIdx] = numVistors; // set the current number of visitors into the tmpArray
 
