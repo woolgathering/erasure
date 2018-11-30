@@ -94,7 +94,7 @@
 
   // make the main pipe for the output: THIS GOES TO THE MAINS!!!
   parent.synths.mainPipe = Synth(\mainPipe,
-    [inBus: parent.busses.mainOut, outBus: 0, amp: parent.busses.volume.asMap],
+    [inBus: parent.busses.mainOut, outBus: 0, amp: parent.busses.volume.asMap, ampScaler: -4.dbamp],
     target: parent.groups.revAndOut, addAction: \addToTail
   );
 

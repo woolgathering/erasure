@@ -54,12 +54,18 @@
   // scaler = recentHistRatio.linlin(1,3,6,18,\max).max(0.1); // scale it
 
   // scale the entire thing (ok if attributes.sum is greater than 1 since it's clipped before it's sent out)
+<<<<<<< HEAD
   attributes = attributes.clip(0,2)
+=======
+  attributes = attributes.clip(0,1);
+>>>>>>> aaf06d4a79711ad5516e4f18c7ed82d14a1a5e21
   faderVal = attributes.sum * scaler;
 
-  if(debug>0){
-    "\n\nAttributes for calculating the faderVal: %\n\n".postf(attributes);
+  if(parent.debugLevel>0){
+    "\n\nAttributes for calculating the faderVal: %\nScaler: %\n\n".postf(attributes, scaler);
   };
+
+	"\n\nNumber of visitors %\n\n".postf(numVistors);
 
   if(parent.initRun) {
     parent.oldFaderVal = parent.startSection; // set our starting section IF it's the first time
@@ -67,7 +73,7 @@
   };
 
   // FOR TESTING
-  // faderVal = (parent.faderStream.next * 0.15).clip(0.5,5.5); // brownian motion. Divide by two so that we move in increments of 0.5. See line 12 in demoMode.scd
+  faderVal = (parent.faderStream.next * 0.15).clip(0.5,5.5); // brownian motion. Divide by two so that we move in increments of 0.5. See line 12 in demoMode.scd
 
   ////////////////////////////////////
   //    SOUND

@@ -1,16 +1,16 @@
 {|parent|
 var hist = ();
 
-hist.tmpArray = Array.fill(288, 0); // a temporary array (this will be made anew every day)
+	hist.tmpArray = Array.fill(288, {rrand(1,15)}); // a temporary array (this will be made anew every day)
 
 // arrays to hold the number of visitors every 5 minutes as set by updateVisitors()
-hist.sun = Array.rand(288, 0, 5); // random values to start
-hist.mon = Array.rand(288, 0, 5); // random values to start
-hist.tue = Array.rand(288, 0, 5); // random values to start
-hist.wed = Array.rand(288, 0, 5); // random values to start
-hist.thu = Array.rand(288, 0, 5); // random values to start
-hist.fri = Array.rand(288, 0, 5); // random values to start
-hist.sat = Array.rand(288, 0, 5); // random values to start
+hist.sun = Array.rand(288, 0, 15); // random values to start
+hist.mon = Array.rand(288, 0, 15); // random values to start
+hist.tue = Array.rand(288, 0, 15); // random values to start
+hist.wed = Array.rand(288, 0, 15); // random values to start
+hist.thu = Array.rand(288, 0, 15); // random values to start
+hist.fri = Array.rand(288, 0, 15); // random values to start
+hist.sat = Array.rand(288, 0, 15); // random values to start
 
 hist.dayCount = (); // another dictionary to count the days elapsted
 hist.dayCount.sun = 1;
@@ -32,6 +32,7 @@ hist.stats.fri = (maxVisitors: 5, minVisitors: 1, avgVisitors: 2);
 hist.stats.sat = (maxVisitors: 5, minVisitors: 1, avgVisitors: 2);
 
 hist.calc = {|dict, day, new|
+  var array;
   // calculate new averages for every 5 minutes
   array = (dict.at(day)+new)/dict.dayCount.at(day); // get the average for every five minutes
   dict.put(day, (dict.at(day)+new)/dict.dayCount.at(day)); // set it internally
@@ -51,7 +52,8 @@ hist.calc = {|dict, day, new|
 };
 
 hist.countDay = {|dict, day|
-  dict.dayCount.at(day) = dict.dayCount.at(day) + 1; // add another day
+		// dict.dayCount.at(day) = dict.dayCount.at(day) + 1; // add another day
+		dict.dayCount.at(day).put(day, dict.dayCount.at(day)+1);
 };
 
 hist.getHistory = {|dict, day, date|
