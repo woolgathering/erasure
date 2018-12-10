@@ -83,6 +83,7 @@
         val = (inc*counter)+parent.oldFaderVal;
         val = val.clip(0.5,6); // clip it
         parent.busses.sectionFader.set((val * rrand(0.98,1.02)).clip(0.5,5.5)); // set the value every 10 seconds. Lagging happens in the Ugens
+        parent.lastSection = parent.busses.sectionFader.get; // remember the last section we were in (for restarting)
 
         // and master volume!!!
         vol = parent.arrays.volume.blendAt(val.linlin(0.5,5.5,0,2047) * rrand(0.98,1.02)); // index

@@ -15,6 +15,14 @@
   hist.tmpArray = Array.fill(288, 0); // reset the array
   archivePath = hist.makeArchive; // make an Archive of the history
 
+  // this.executeFile("~/Desktop/erasure/sc/funcs/restart.scd".standardizePath, parent.busses.sectionFader.get);
+  fork {
+    // parent.server.quit;
+    1.wait;
+    // thisProcess.interpreter.executeFile("~/Desktop/erasure/sc/funcs/restart.scd".standardizePath, parent.busses.sectionFader.get); // restart at the same section
+    thisProcess.interpreter.executeFile("~/Desktop/erasure/sc/funcs/restart.scd".standardizePath); // restart at the same section
+  };
+
   // The function doChecks checks the status of the installation and tells if something has broken.
   // Since it runs every 5 minutes inside checkStatus(), duplicating it here is not necessary.
 
