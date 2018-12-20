@@ -40,28 +40,29 @@
 
     0.1, noise (gauss)
   */
-  attributes[0] = (numVistors/70) * 0.5; // scale it
+  attributes[0] = (numVistors/70) * 0.3; // scale it
   attributes[1] = (numVistors/hist.at(day)[thisIdx]) * 0.2; // scale it
   attributes[2] = (hist.stats.at(day).avgVisitors / hist.stats.at(day).maxVisitors) * 0.1; // scale it
   attributes[3] = (hist.at(day)[thisIdx] / hist.stats.at(day).avgVisitors) * 0.1; // scale it
-  attributes[4] = gauss(0.05, 0.015).clip(0,0.1); // noise
+  // attributes[4] = gauss(0.05, 0.015).clip(0,0.1); // noise
+  attributes[4] = parent.brownNoise.next;
 
   // the scaler is calculated on the recent history ratio
   // scaler modulates between max (6??) and higher depending on how quickly people file in. The descending rate is constant but the upward rate can be faster.
   prevVisitors = if(thisIdx != 0) {hist.tmpArray[thisIdx-1].max(1)} {1}; // set it to 1 if it's midnight or if it was 0 (to not mess things up below)
   recentHistRatio = numVistors/prevVisitors; // get the ratio
-  scaler = recentHistRatio.lincurve(1,3,5.5,10,-0.75,\max).max(0.1); // scale the ratio
+  scaler = recentHistRatio.lincurve(1,3,4.0,10,-0.75,\max).max(0.1); // scale the ratio
   // scaler = recentHistRatio.linlin(1,3,6,18,\max).max(0.1); // scale it
 
   // scale the entire thing (ok if attributes.sum is greater than 1 since it's clipped before it's sent out)
   attributes = attributes.clip(0,2);
-  faderVal = attributes.sum * scaler;
+  faderVal = (attributes.sum * scaler).max(0.5);
 
   if(parent.debugLevel>0){
     "\n\nAttributes for calculating the faderVal: %\nScaler: %\n\n".postf(attributes, scaler);
   };
 
-	"\n\nNumber of visitors %\n\n".postf(numVistors);
+	"\n\nNumber of visitors %\n------FaderVal according to visitation: %\n\n".postf(numVistors, faderVal);
 
   if(parent.initRun) {
     parent.oldFaderVal = parent.startSection; // set our starting section IF it's the first time
@@ -69,7 +70,7 @@
   };
 
   // FOR TESTING
-	faderVal = (parent.faderStream.next * 0.15).clip(0.5,5.5); // brownian motion. Divide by two so that we move in increments of 0.5. See line 12 in demoMode.scd
+	// faderVal = (parent.faderStream.next * 0.15).clip(0.5,5.5); // brownian motion. Divide by two so that we move in increments of 0.5. See line 12 in demoMode.scd
 
   ////////////////////////////////////
   //    SOUND

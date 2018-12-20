@@ -100,7 +100,7 @@ hist.restore = {|dict, path|
 hist.getLatestArchive = {|dict|
   var paths, return;
   paths = (parent.thisDir++"/sc/archives/*.archive").pathMatch; // get the paths in an array
-  if(paths.size != 0) {
+  if(paths.size > 1) {
     paths = p.collect{|path|
   	  [path, path.basename.splitext[0].split($_)[0].asInteger];
     }.sort({|a,b| a[1] < b[1]}); // sort the paths by date
