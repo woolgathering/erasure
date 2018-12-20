@@ -69,7 +69,7 @@
   };
 
   // FOR TESTING
-	// faderVal = (parent.faderStream.next * 0.15).clip(0.5,5.5); // brownian motion. Divide by two so that we move in increments of 0.5. See line 12 in demoMode.scd
+	faderVal = (parent.faderStream.next * 0.15).clip(0.5,5.5); // brownian motion. Divide by two so that we move in increments of 0.5. See line 12 in demoMode.scd
 
   ////////////////////////////////////
   //    SOUND
@@ -83,7 +83,7 @@
         val = (inc*counter)+parent.oldFaderVal;
         val = val.clip(0.5,6); // clip it
         parent.busses.sectionFader.set((val * rrand(0.98,1.02)).clip(0.5,5.5)); // set the value every 10 seconds. Lagging happens in the Ugens
-        parent.lastSection = parent.busses.sectionFader.get; // remember the last section we were in (for restarting)
+		parent.lastSection = parent.busses.sectionFader.getSynchronous; // remember the last section we were in (for restarting)
 
         // and master volume!!!
         vol = parent.arrays.volume.blendAt(val.linlin(0.5,5.5,0,2047) * rrand(0.98,1.02)); // index
@@ -131,11 +131,11 @@
         if(parent.debugLevel>0) {"distort: %\nsliced: %\nlocal: %\nspeed: %\nfocal_length: %\n\n".postf(distort, sliced, localization, speed, focalLength)};
 
         // send the values to the visual machine
-        vis.server.sendMsg("/erasure/distort", distort, 120); // lag really long to act as a lp filter
-        vis.server.sendMsg("/erasure/sliced", sliced, 120);
-        vis.server.sendMsg("/erasure/localization", localization, 120);
+        vis.server.sendMsg("/erasure/distort", distort, 180); // lag really long to act as a lp filter
+        vis.server.sendMsg("/erasure/sliced", sliced, 180);
+        vis.server.sendMsg("/erasure/localization", localization, 180);
         vis.server.sendMsg("/erasure/speed", speed, 45);
-        vis.server.sendMsg("/erasure/focal_length", focalLength, 120);
+        vis.server.sendMsg("/erasure/focal_length", focalLength, 180);
 
         counter = counter + 1;
         10.wait; // wait 10 seconds.

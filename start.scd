@@ -5,6 +5,7 @@ if(~parent.notNil) {
   };
 };
 
+Server.killAll;
 ~parent = ();
 ~parent.server = Server.default;
 ~parent.thisDir = "~/Desktop/erasure".standardizePath;
@@ -23,7 +24,7 @@ File.include(~parent.thisDir ++ "/sc/serverSettings.scd", ~parent);
   ~parent.server.sync; // sync just in case we just ran CmdPeriod
   File.include(~parent.thisDir ++ "/sc/main.scd", ~parent);
   ~parent.server.makeGui;
-  // ~parent.server.meter;
+  ~parent.server.meter;
 });
 "";
 )

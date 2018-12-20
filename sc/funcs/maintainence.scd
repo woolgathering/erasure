@@ -7,6 +7,8 @@
 {|parent|
   var yesterday, email, hist, plot, archivePath;
 
+  "Running the maintainence func...".warn;
+
   hist = parent.hist; // make life easier
   // email = File.open(PathName.tmp++"erasureMaintainenceEmail", "a+"); // open an emtpy file for writing
   yesterday = Date.getDate.yesterday.format("%a").toLower.asSymbol; // get yesterday and make it a symbol
@@ -20,7 +22,7 @@
     // parent.server.quit;
     1.wait;
     // thisProcess.interpreter.executeFile("~/Desktop/erasure/sc/funcs/restart.scd".standardizePath, parent.busses.sectionFader.get); // restart at the same section
-    thisProcess.interpreter.executeFile("~/Desktop/erasure/sc/funcs/restart.scd".standardizePath); // restart at the same section
+		thisProcess.interpreter.executeFile(parent.thisDir++"/sc/funcs/restart.scd".standardizePath); // restart at the same section
   };
 
   // The function doChecks checks the status of the installation and tells if something has broken.
