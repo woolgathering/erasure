@@ -64,7 +64,7 @@ hist.getHistory = {|dict, day, date|
 // a function to save the history to an Archive
 hist.makeArchive = {|dict|
   var path, archive = (), file; // an empty dict for the Archive
-  path = parent.thisDir++"/archives/"++Date.getDate.yesterday.stamp++".archive"; // get the path
+  path = parent.thisDir++"/sc/archives/"++Date.getDate.yesterday.stamp++".archive"; // get the path
   archive.dayCounts = dict.dayCount; // the number of days that have elapsted
   archive.stats = dict.stats; // keep the stats
   archive.history = (
@@ -90,6 +90,7 @@ hist.restore = {|dict, path|
     archive.history.keysValuesDo{|key, value|
       hist.put(key, value); // set it
     };
+	"Loaded archive at %/\n".format(path).warn;
   } {
     // else the path is nil (no archives) so do nothing
     "No archives avaialble so none were loaded".warn; // but tell us
@@ -100,8 +101,8 @@ hist.restore = {|dict, path|
 hist.getLatestArchive = {|dict|
   var paths, return;
   paths = (parent.thisDir++"/sc/archives/*.archive").pathMatch; // get the paths in an array
-  if(paths.size > 1) {
-    paths = p.collect{|path|
+  if(paths.size > 0) {
+    paths = paths.collect{|path|
   	  [path, path.basename.splitext[0].split($_)[0].asInteger];
     }.sort({|a,b| a[1] < b[1]}); // sort the paths by date
     return = paths[paths.size-1][1]; // return the path of the latest archive
