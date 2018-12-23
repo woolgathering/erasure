@@ -105,7 +105,7 @@ hist.getLatestArchive = {|dict|
     paths = paths.collect{|path|
   	  [path, path.basename.splitext[0].split($_)[0].asInteger];
     }.sort({|a,b| a[1] < b[1]}); // sort the paths by date
-    return = paths[paths.size-1][1]; // return the path of the latest archive
+    return = paths[paths.size-1][0]; // return the path of the latest archive
   } {
     return = nil;
   };
